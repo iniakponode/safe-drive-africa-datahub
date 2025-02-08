@@ -14,8 +14,6 @@ The data analysis platform for the safe drive africa
 - **Analytics Dashboard**  
   Visualize driving data through charts, graphs, and heatmaps to quickly identify trends and patterns.
 
-- **Alerts and Notifications**  
-  Get notified if unsafe driving patterns are detected.
 
 - **Historical Data Comparison**  
   Compare current driving data with historical records to measure improvement or identify recurring issues.
@@ -33,3 +31,14 @@ The data analysis platform for the safe drive africa
    ```bash
    git clone https://github.com/iniakponode/safe-drive-africa-datahub.git
    cd safe-drive-datahub
+
+2. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+3. **Usage**
+   ```bash
+   python main.py
+  This command starts the server or the main analytics process, depending on your specific implementation.
+
+4. **Access the Dashboard**
+  Open your browser and navigate to the URL (e.g., http://localhost:8001) to view the dashboard.
