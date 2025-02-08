@@ -1,6 +1,6 @@
 # app/routes/__init__.py
 from fastapi import APIRouter
-from routes import dashboard  # Import additional route modules as needed
+from app.routes import dashboard  # Import additional route modules as needed
 
 router = APIRouter()
 

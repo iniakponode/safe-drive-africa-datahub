@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from services import data_service
+from app.services import data_service
 
 router = APIRouter()
 

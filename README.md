@@ -37,7 +37,7 @@ The data analysis platform for the safe drive africa
    pip install -r requirements.txt
 3. **Usage**
    ```bash
-   python main.py
+   python app/main.py
   This command starts the server or the main analytics process, depending on your specific implementation.
 
 4. **Access the Dashboard**
