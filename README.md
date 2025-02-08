@@ -31,5 +31,5 @@ The data analysis platform for the safe drive
 
 1. **Clone the Repository**  
    ```bash
-   git clone https://github.com/your-username/safe-drive-datahub.git
+   git clone https://github.com/iniakponode/safe-drive-africa-datahub.git
    cd safe-drive-datahub
