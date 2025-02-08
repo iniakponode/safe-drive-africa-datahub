@@ -1,0 +1,43 @@
+{# app/templates/pages/index.html #}
+{% extends "base.html" %}
+
+{% block title %}Dashboard - DataHub{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Experiment Data Overview</h1>
+  
+  <!-- Summary Cards -->
+  <div class="row">
+    <div class="col-md-3 mb-3">
+      {% from "partials/card.html" import render_card %}
+      {{ render_card("Total Drivers", aggregates.total_drivers, "bg-primary") }}
+    </div>
+    <div class="col-md-3 mb-3">
+      {{ render_card("Total Trips", aggregates.total_trips, "bg-secondary") }}
+    </div>
+    <div class="col-md-3 mb-3">
+      {{ render_card("Total Sensor Data", aggregates.total_sensor_data, "bg-success") }}
+    </div>
+    <div class="col-md-3 mb-3">
+      {{ render_card("Invalid Sensor Data", aggregates.invalid_sensor_data_count, "bg-danger") }}
+    </div>
+  </div>
+  
+  {# Prepare data for tables #}
+  {% set trips_table_rows = [] %}
+  {% for driver_id, count in aggregates.trips_per_driver.items() %}
+      {% set row = {"Driver ID": driver_id, "Trip Count": count} %}
+      {% set trips_table_rows = trips_table_rows + [row] %}
+  {% endfor %}
+  
+  {% from "partials/table.html" import render_table %}
+  {{ render_table("Trips Per Driver", ["Driver ID", "Trip Count"], trips_table_rows) }}
+       
+  {% set sensor_table_rows = [] %}
+  {% for trip_id, count in aggregates.sensor_data_per_trip.items() %}
+      {% set row = {"Trip ID": trip_id, "Sensor Data Count": count} %}
+      {% set sensor_table_rows = sensor_table_rows + [row] %}
+  {% endfor %}
+  
+  {{ render_table("Sensor Data Per Trip", ["Trip ID", "Sensor Data Count"], sensor_table_rows) }}
+{% endblock %}

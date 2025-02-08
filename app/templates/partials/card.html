@@ -1,0 +1,19 @@
+{# app/templates/partials/card.html #}
+{% macro render_card(card_header, card_title, card_class, card_text=None, card_content=None) %}
+<div class="card text-white {{ card_class }}">
+  {% if card_header %}
+    <div class="card-header">{{ card_header }}</div>
+  {% endif %}
+  <div class="card-body">
+    {% if card_title %}
+      <h5 class="card-title">{{ card_title }}</h5>
+    {% endif %}
+    {% if card_text %}
+      <p class="card-text">{{ card_text }}</p>
+    {% endif %}
+    {% if card_content %}
+      {{ card_content | safe }}
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}

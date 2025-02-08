@@ -1,0 +1,24 @@
+{# app/templates/partials/table.html #}
+{% macro render_table(table_title, table_columns, table_rows) %}
+  {% if table_title %}
+    <h2>{{ table_title }}</h2>
+  {% endif %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        {% for col in table_columns %}
+          <th>{{ col }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in table_rows %}
+        <tr>
+          {% for col in table_columns %}
+            <td>{{ row[col] }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endmacro %}

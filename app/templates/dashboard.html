@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataHub Analysis Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">DataHub Dashboard</a>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container my-4">
+        <h1 class="mb-4">Experiment Data Overview</h1>
+        <div class="row">
+            <!-- Summary Cards -->
+            <div class="col-md-3 mb-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-header">Total Drivers</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ aggregates.total_drivers }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-white bg-secondary">
+                    <div class="card-header">Total Trips</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ aggregates.total_trips }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-white bg-success">
+                    <div class="card-header">Total Sensor Data</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ aggregates.total_sensor_data }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-white bg-danger">
+                    <div class="card-header">Invalid Sensor Data</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ aggregates.invalid_sensor_data_count }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Detailed Tables -->
+        <h2 class="mt-5">Trips Per Driver</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Driver ID</th>
+                    <th>Trip Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for driver_id, count in aggregates.trips_per_driver.items() %}
+                <tr>
+                    <td>{{ driver_id }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <h2 class="mt-5">Sensor Data Per Trip</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Trip ID</th>
+                    <th>Sensor Data Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trip_id, count in aggregates.sensor_data_per_trip.items() %}
+                <tr>
+                    <td>{{ trip_id }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

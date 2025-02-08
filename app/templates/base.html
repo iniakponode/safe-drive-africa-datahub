@@ -1,0 +1,37 @@
+<!-- app/templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}DataHub Analysis Dashboard{% endblock %}</title>
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+  <!-- Your custom static files -->
+  
+  <!-- Static files referenced with absolute paths -->
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/navbar.css" />
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <!-- Include header partial -->
+  {% include "partials/header.html" %}
+  
+  <div class="container my-4">
+    {% block content %}{% endblock %}
+  </div>
+  
+  <!-- Include footer partial -->
+  {% include "partials/footer.html" %}
+  
+
+  <!-- Bootstrap and dependencies JS CDN -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <!-- Your custom static JavaScript -->
+  <script src="/static/js/main.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
