@@ -4,7 +4,7 @@ The data analysis platform for the safe drive africa
 
 ## Overview
 
-**safe-drive-datahub** is an analytics platform designed to help curate drivers driving data from the safe-drive-africa-api to anaylse and better understand their driving patterns, and improve overall driving safety. By collecting, processing, and visualizing key data points (like speed, braking, swerving and alcohol influenced driving), this platform aims to provide actionable insights to foster safer driving behaviours in Africa. This is part of a PhD Research work domiciled at the University of Aberdeen Scotland, United Kingdom and sponsored by the Tertiary Education Trust Fund (Tetfund) in Nigeria.
+**safe-drive-datahub** is an analytics platform designed to help curate drivers driving data from the safe-drive-africa-api to anaylse and better understand drivers driving patterns, with the aim to improve overall driving safety. By collecting, processing, and visualizing key data points (like speed, braking, swerving and alcohol influenced driving), this platform aims to provide actionable insights to foster safer driving behaviours in Africa. This is part of a PhD Research work domiciled at the University of Aberdeen Scotland, United Kingdom and sponsored by the Tertiary Education Trust Fund (Tetfund) in Nigeria.
 
 ## Features
 
