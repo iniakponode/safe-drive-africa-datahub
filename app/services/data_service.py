@@ -7,9 +7,9 @@ from typing import Any, Dict, List
 logger = logging.getLogger(__name__)
 
 # Define the backend API endpoints.
-DRIVERS_URL = "https://api.safedriveafrica.com/api/driver_profiles"
-TRIPS_URL = "https://api.safedriveafrica.com/api/trips"
-SENSOR_URL = "https://api.safedriveafrica.com/api/raw_sensor_data"
+DRIVERS_URL = "https://api.safedriveafrica.com/api/driver_profiles/"
+TRIPS_URL = "https://api.safedriveafrica.com/api/trips/"
+SENSOR_URL = "https://api.safedriveafrica.com/api/raw_sensor_data/"
 
 async def fetch_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:
     try:
