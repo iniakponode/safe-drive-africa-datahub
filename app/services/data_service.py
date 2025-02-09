@@ -97,9 +97,11 @@ async def fetch_all_data() -> List[Dict[str, Any]]:
         # gather calls to fetch_driver_details for each driver’s email
         tasks = []
         for d in drivers_list:
-            email = d.get("email")
-            if email:
-                tasks.append(fetch_driver_details(client, email))
+            raw_email = d.get("email", "")
+            clean_email = raw_email.strip()  # remove trailing, leading whitespace & newlines
+            
+        if clean_email:
+                tasks.append(fetch_driver_details(client, clean_email))
 
         # Run them concurrently
         all_driver_details = await asyncio.gather(*tasks)
