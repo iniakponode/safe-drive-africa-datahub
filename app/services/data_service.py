@@ -140,7 +140,9 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
 
     # 3) We'll track invalid sensor data globally + per trip
     invalid_sensor_data_count_global = 0
+    valid_sensor_data_count_global=0
     invalid_per_trip = {}
+    valid_per_trip={}
 
     # We'll also track how many sensor points each trip has
     sensor_data_per_trip = {}
@@ -163,6 +165,10 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
             invalid_sensor_data_count_global += 1
             if trip_id:
                 invalid_per_trip[trip_id] = invalid_per_trip.get(trip_id, 0) + 1
+        else:
+            valid_sensor_data_count_global+=1
+            if trip_id:
+                valid_per_trip[trip_id]=valid_per_trip.get(trip_id,0)+1
 
     # 5) Build a "driver_trip_sensor_stats" table
     driver_trip_sensor_stats = []
@@ -196,7 +202,7 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     return {
         "total_drivers": total_drivers,
         "total_trips": total_trips,
-        "total_sensor_data": total_sensor_data,
+        "total_sensor_data": valid_sensor_data_count_global,
         "invalid_sensor_data_count": invalid_sensor_data_count_global,
         "driver_trip_sensor_stats": driver_trip_sensor_stats,
     }
