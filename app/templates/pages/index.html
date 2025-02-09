@@ -5,7 +5,7 @@
 
 {% block content %}
   <h1 class="mb-4">Experiment Data Overview</h1>
-  
+
   <!-- Summary Cards -->
   <div class="row">
     <div class="col-md-3 mb-3">
@@ -22,22 +22,23 @@
       {{ render_card("Invalid Sensor Data", aggregates.invalid_sensor_data_count, "bg-danger") }}
     </div>
   </div>
-  
-  {# Prepare data for tables #}
-  {% set trips_table_rows = [] %}
-  {% for driver_id, count in aggregates.trips_per_driver.items() %}
-      {% set row = {"Driver ID": driver_id, "Trip Count": count} %}
-      {% set trips_table_rows = trips_table_rows + [row] %}
+
+  {# Build table data for each (driver, trip) row #}
+  {% set table_rows = [] %}
+  {% for row in aggregates.driver_trip_sensor_stats %}
+    {% set new_row = {
+      "Driver Email": row.driverEmail,
+      "Trip ID": row.tripId,
+      "Sensor Data Count": row.sensorDataCount,
+      "Invalid Sensor Data Count": row.invalidSensorDataCount
+    } %}
+    {% set table_rows = table_rows + [new_row] %}
   {% endfor %}
-  
+
   {% from "partials/table.html" import render_table %}
-  {{ render_table("Trips Per Driver", ["Driver ID", "Trip Count"], trips_table_rows) }}
-       
-  {% set sensor_table_rows = [] %}
-  {% for trip_id, count in aggregates.sensor_data_per_trip.items() %}
-      {% set row = {"Trip ID": trip_id, "Sensor Data Count": count} %}
-      {% set sensor_table_rows = sensor_table_rows + [row] %}
-  {% endfor %}
-  
-  {{ render_table("Sensor Data Per Trip", ["Trip ID", "Sensor Data Count"], sensor_table_rows) }}
+  {{ render_table(
+      "Sensor Data Per Trip (Per Driver)",
+      ["Driver Email", "Trip ID", "Sensor Data Count", "Invalid Sensor Data Count"],
+      table_rows
+  ) }}
 {% endblock %}
