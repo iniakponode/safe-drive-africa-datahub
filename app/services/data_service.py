@@ -92,15 +92,12 @@ async def fetch_sensor_data_in_chunks(client: httpx.AsyncClient, chunk_size: int
 async def fetch_all_data() -> Dict[str, List[Dict[str, Any]]]:
     """
     1) Fetch all drivers in one go (or chunk if needed).
-    2) Fetch all trips in chunks (avoid 500 error).
-    3) Fetch all sensor data in chunks (avoid 500 error).
+    2) Fetch all trips in chunks.
+    3) Fetch all sensor data in chunks.
 
     Return a dict with lists: "drivers", "trips", "sensor_data".
     """
     async with httpx.AsyncClient() as client:
-        # You can run drivers/trips/sensors concurrently if desired, 
-        # but here we'll do them sequentially for clarity.
-
         # If you want concurrency, you can do something like:
         # d, t, s = await asyncio.gather(
         #    fetch_all_drivers(client),
@@ -125,46 +122,99 @@ async def fetch_all_data() -> Dict[str, List[Dict[str, Any]]]:
 def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     """
     Computes:
-    - total_drivers
-    - total_trips
-    - total_sensor_data
-    - trips_per_driver
-    - sensor_data_per_trip
-    - invalid_sensor_data_count
+      - total_drivers
+      - total_trips
+      - total_sensor_data
+      - invalid_sensor_data_count (global)
+
+    Also:
+      - trips_per_driver (dict)
+      - sensor_data_per_trip (dict)
+      - driver_trip_sensor_stats (list of dict for the table),
+        each item = {
+          "driverEmail": ...,
+          "tripId": ...,
+          "sensorDataCount": ...,
+          "invalidSensorDataCount": ...
+        }
     """
+
     drivers = data.get("drivers", [])
     trips = data.get("trips", [])
     sensor_data = data.get("sensor_data", [])
 
+    # Build a lookup from driverProfileId -> email so we can display driver email in the table
+    driver_id_to_email = {}
+    for d in drivers:
+        driver_id = d.get("driverProfileId")
+        email = d.get("email")
+        if driver_id and email:
+            driver_id_to_email[driver_id] = email
+
+    # Basic totals
     total_drivers = len(drivers)
     total_trips = len(trips)
     total_sensor_data = len(sensor_data)
 
+    # Count invalid sensor data globally & also build a "invalidSensorDataPerTrip"
+    invalid_sensor_data_count_global = 0
+    invalid_sensor_data_per_trip = {}
+    for s in sensor_data:
+        t_id = s.get("trip_id")
+        x, y, z = s.get("x"), s.get("y"), s.get("z")
+        if x == 0 and y == 0 and z == 0:
+            invalid_sensor_data_count_global += 1
+            if t_id:
+                invalid_sensor_data_per_trip[t_id] = invalid_sensor_data_per_trip.get(t_id, 0) + 1
+
     # trips_per_driver
     trips_per_driver = {}
-    for trip in trips:
-        driver_id = trip.get("driverProfileId")
-        if driver_id:
-            trips_per_driver[driver_id] = trips_per_driver.get(driver_id, 0) + 1
-
     # sensor_data_per_trip
     sensor_data_per_trip = {}
-    for sensor in sensor_data:
-        tid = sensor.get("trip_id")
-        if tid:
-            sensor_data_per_trip[tid] = sensor_data_per_trip.get(tid, 0) + 1
 
-    # invalid sensor data
-    invalid_sensor_data_count = sum(
-        1 for s in sensor_data
-        if s.get("x") == 0 and s.get("y") == 0 and s.get("z") == 0
-    )
+    # For building our driver_trip_sensor_stats table
+    driver_trip_sensor_stats = []
+
+    # Build sensor_data_per_trip as well
+    for s in sensor_data:
+        t_id = s.get("trip_id")
+        if t_id:
+            sensor_data_per_trip[t_id] = sensor_data_per_trip.get(t_id, 0) + 1
+
+    # Now iterate each trip to fill out stats for the table
+    for trip in trips:
+        trip_id = trip.get("id") or trip.get("trip_id")
+        driver_profile_id = trip.get("driverProfileId")
+        if not trip_id:
+            # skip if no valid trip ID
+            continue
+
+        # For "trips_per_driver" aggregator
+        if driver_profile_id:
+            trips_per_driver[driver_profile_id] = trips_per_driver.get(driver_profile_id, 0) + 1
+
+        # Build the row for the table
+        driver_email = driver_id_to_email.get(driver_profile_id, "Unknown Driver")
+        sensor_count = sensor_data_per_trip.get(trip_id, 0)
+        invalid_count = invalid_sensor_data_per_trip.get(trip_id, 0)
+
+        row = {
+            "driverEmail": driver_email,
+            "tripId": trip_id,
+            "sensorDataCount": sensor_count,
+            "invalidSensorDataCount": invalid_count,
+        }
+        driver_trip_sensor_stats.append(row)
+
+    # Sort the rows by driverEmail, then tripId for a consistent display
+    driver_trip_sensor_stats.sort(key=lambda r: (r["driverEmail"], str(r["tripId"])))
 
     return {
         "total_drivers": total_drivers,
         "total_trips": total_trips,
         "total_sensor_data": total_sensor_data,
+        "invalid_sensor_data_count": invalid_sensor_data_count_global,
         "trips_per_driver": trips_per_driver,
         "sensor_data_per_trip": sensor_data_per_trip,
-        "invalid_sensor_data_count": invalid_sensor_data_count
+        "driver_trip_sensor_stats": driver_trip_sensor_stats,
     }
