@@ -59,7 +59,7 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     # Aggregate trips per driver (assuming each trip record contains "driver_profile_id")
     trips_per_driver = {}
     for trip in trips:
-        driver_id = trip.get("driverProfileId")
+        driver_id = trip.get("email")
         if driver_id:
             trips_per_driver[driver_id] = trips_per_driver.get(driver_id, 0) + 1
 
