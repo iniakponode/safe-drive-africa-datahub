@@ -22,23 +22,31 @@
       {{ render_card("Invalid Sensor Data", aggregates.invalid_sensor_data_count, "bg-danger") }}
     </div>
   </div>
+  
+  <div class="row">
+    <div class="col-md-3 mb-3">
+      {{ render_card("Valid Sensor Data", aggregates.total_valid_sensor_data, "bg-info") }}
+    </div>
+  </div>  
 
   {# Build table data for each (driver, trip) row #}
   {% set table_rows = [] %}
-  {% for row in aggregates.driver_trip_sensor_stats %}
-    {% set new_row = {
-      "Driver Email": row.driverEmail,
-      "Trip ID": row.tripId,
-      "Sensor Data Count": row.sensorDataCount,
-      "Invalid Sensor Data Count": row.invalidSensorDataCount
-    } %}
-    {% set table_rows = table_rows + [new_row] %}
-  {% endfor %}
+{% for row in aggregates.driver_trip_sensor_stats %}
+  {% set new_row = {
+    "Driver Email": row.driverEmail,
+    "Trip ID": row.tripId,
+    "Total": row.totalSensorDataCount,
+    "Invalid": row.invalidSensorDataCount,
+    "Valid": row.validSensorDataCount
+  } %}
+  {% set table_rows = table_rows + [new_row] %}
+{% endfor %}
 
-  {% from "partials/table.html" import render_table %}
-  {{ render_table(
-      "Sensor Data Per Trip (Per Driver)",
-      ["Driver Email", "Trip ID", "Sensor Data Count", "Invalid Sensor Data Count"],
-      table_rows
-  ) }}
+{% from "partials/table.html" import render_table %}
+{{ render_table(
+    "Sensor Data Per Trip (Per Driver)",
+    ["Driver Email", "Trip ID", "Total", "Invalid", "Valid"],
+    table_rows
+) }}
+
 {% endblock %}

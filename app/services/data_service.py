@@ -6,19 +6,17 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-# Define the backend API endpoints.
+# Backend endpoints
 DRIVERS_URL = "https://api.safedriveafrica.com/api/driver_profiles/"
 TRIPS_URL = "https://api.safedriveafrica.com/api/trips/"
 SENSOR_URL = "https://api.safedriveafrica.com/api/raw_sensor_data/"
 
 ################################################################################
-# PAGINATION HELPERS
+# 1) Chunked Fetch Helpers
 ################################################################################
 
 async def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:
-    """
-    Fetches ALL driver profiles (with a large limit in one request).
-    """
+    """Fetch all DriverProfiles in one request (large limit)."""
     try:
         url = f"{DRIVERS_URL}?skip=0&limit=999999"
         resp = await client.get(url)
@@ -29,13 +27,9 @@ async def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:
         return []
 
 async def fetch_trips_in_chunks(client: httpx.AsyncClient, chunk_size: int = 5000) -> List[Dict[str, Any]]:
-    """
-    Fetch all trips in multiple requests of `chunk_size` each.
-    Continues until an empty chunk is returned.
-    """
+    """Fetch all Trips in multiple requests until no more data."""
     all_trips = []
     skip = 0
-
     while True:
         try:
             url = f"{TRIPS_URL}?skip={skip}&limit={chunk_size}"
@@ -43,12 +37,11 @@ async def fetch_trips_in_chunks(client: httpx.AsyncClient, chunk_size: int = 500
             resp.raise_for_status()
             chunk = resp.json()
         except Exception as e:
-            logger.error(f"Error fetching trips (page skip={skip}): {e}")
+            logger.error(f"Error fetching trips (skip={skip}): {e}")
             break
 
         if not chunk:
-            # No more trips
-            break
+            break  # no more data
 
         all_trips.extend(chunk)
         skip += chunk_size
@@ -56,13 +49,9 @@ async def fetch_trips_in_chunks(client: httpx.AsyncClient, chunk_size: int = 500
     return all_trips
 
 async def fetch_sensor_data_in_chunks(client: httpx.AsyncClient, chunk_size: int = 5000) -> List[Dict[str, Any]]:
-    """
-    Fetch all sensor data in multiple requests of `chunk_size` each.
-    Continues until an empty chunk is returned.
-    """
+    """Fetch all RawSensorData in multiple requests until no more data."""
     all_sensors = []
     skip = 0
-
     while True:
         try:
             url = f"{SENSOR_URL}?skip={skip}&limit={chunk_size}"
@@ -70,12 +59,11 @@ async def fetch_sensor_data_in_chunks(client: httpx.AsyncClient, chunk_size: int
             resp.raise_for_status()
             chunk = resp.json()
         except Exception as e:
-            logger.error(f"Error fetching sensor data (page skip={skip}): {e}")
+            logger.error(f"Error fetching sensor data (skip={skip}): {e}")
             break
 
         if not chunk:
-            # No more sensor data
-            break
+            break  # no more data
 
         all_sensors.extend(chunk)
         skip += chunk_size
@@ -83,15 +71,17 @@ async def fetch_sensor_data_in_chunks(client: httpx.AsyncClient, chunk_size: int
     return all_sensors
 
 ################################################################################
-# MASTER FETCH
+# 2) Master Fetch
 ################################################################################
 
 async def fetch_all_data() -> Dict[str, List[Dict[str, Any]]]:
     """
-    1) Fetch all drivers (one large request).
-    2) Fetch all trips in chunks.
-    3) Fetch all sensor data in chunks.
-    Returns { "drivers": [...], "trips": [...], "sensor_data": [...] }
+    Returns:
+      {
+        "drivers": [...],
+        "trips": [...],
+        "sensor_data": [...]
+      }
     """
     async with httpx.AsyncClient() as client:
         drivers = await fetch_all_drivers(client)
@@ -105,104 +95,125 @@ async def fetch_all_data() -> Dict[str, List[Dict[str, Any]]]:
     }
 
 ################################################################################
-# AGGREGATION
+# 3) Aggregation
 ################################################################################
 
 def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     """
-    Aggregates data from:
-      - "drivers": list of DriverProfile JSON (with driverProfileId, email, etc.)
-      - "trips": list of Trip JSON (with id, driverProfileId, etc.)
-      - "sensor_data": list of RawSensorData JSON (with trip_id, values=[x,y,z], etc.)
+    Build summary stats + a table of per-trip sensor data.
 
-    Returns a dict with:
-      - total_drivers, total_trips, total_sensor_data
+    Output includes:
+      - total_drivers
+      - total_trips
+      - total_sensor_data
       - invalid_sensor_data_count (global)
-      - driver_trip_sensor_stats: list of {driverEmail, tripId, sensorDataCount, invalidSensorDataCount}
+      - total_valid_sensor_data (global)
+      - driver_trip_sensor_stats: [
+          {
+            "driverEmail": str,
+            "tripId": str or UUID,
+            "totalSensorDataCount": int,
+            "invalidSensorDataCount": int,
+            "validSensorDataCount": int
+          }, ...
+        ]
     """
 
     drivers = data.get("drivers", [])
     trips = data.get("trips", [])
     sensor_data = data.get("sensor_data", [])
 
-    # 1) Build a map driverProfileId -> email to display driver emails in table
+    #
+    #  A) driverProfileId -> email map
+    #
     driver_id_to_email = {}
     for d in drivers:
-        driver_id = d.get("driverProfileId")
+        d_id = d.get("driverProfileId")
         email = d.get("email")
-        if driver_id and email:
-            driver_id_to_email[driver_id] = email
+        if d_id and email:
+            driver_id_to_email[d_id] = email
 
-    # 2) Basic total counts
+    #
+    #  B) Basic totals
+    #
     total_drivers = len(drivers)
     total_trips = len(trips)
     total_sensor_data = len(sensor_data)
 
-    # 3) We'll track invalid sensor data globally + per trip
+    #
+    #  C) Count invalid & valid sensor data globally + per trip
+    #
     invalid_sensor_data_count_global = 0
-    valid_sensor_data_count_global=0
+    valid_sensor_data_count_global = 0
+
     invalid_per_trip = {}
-    valid_per_trip={}
+    valid_per_trip = {}
+    sensor_data_per_trip = {}  # total # sensor rows per trip
 
-    # We'll also track how many sensor points each trip has
-    sensor_data_per_trip = {}
-
-    # 4) Parse each sensor record: check if values=[0.0,0.0,0.0]
     for s in sensor_data:
         trip_id = s.get("trip_id")
-        vals = s.get("values", [])  # e.g. [0.0, 0.0, 0.0]
-        
-        # Make sure we don't crash if it's not exactly 3 elements
+        if not trip_id:
+            continue  # skip if no trip ID
+
+        # 'values' is a list [x, y, z]
+        vals = s.get("values", [])
         x = vals[0] if len(vals) > 0 else None
         y = vals[1] if len(vals) > 1 else None
         z = vals[2] if len(vals) > 2 else None
 
-        # Count total sensor records for this trip
         sensor_data_per_trip[trip_id] = sensor_data_per_trip.get(trip_id, 0) + 1
 
-        # Check if it's "invalid" (x=0,y=0,z=0)
-        if x == 0.0 and y == 0.0 and z == 0.0:
+        # Check if invalid
+        if x == 0 and y == 0 and z == 0:
             invalid_sensor_data_count_global += 1
-            if trip_id:
-                invalid_per_trip[trip_id] = invalid_per_trip.get(trip_id, 0) + 1
+            invalid_per_trip[trip_id] = invalid_per_trip.get(trip_id, 0) + 1
         else:
-            valid_sensor_data_count_global+=1
-            if trip_id:
-                valid_per_trip[trip_id]=valid_per_trip.get(trip_id,0)+1
+            valid_sensor_data_count_global += 1
+            valid_per_trip[trip_id] = valid_per_trip.get(trip_id, 0) + 1
 
-    # 5) Build a "driver_trip_sensor_stats" table
+    #
+    #  D) Build the table: one row per trip
+    #
     driver_trip_sensor_stats = []
-    for t in trips:
-        trip_id = t.get("id")
-        driver_profile_id = t.get("driverProfileId")
 
-        # If we don't have an ID or driverProfileId, skip
+    for t in trips:
+        trip_id = t.get("id")  # or "trip_id" if that's the correct field
+        driver_profile_id = t.get("driver_profile_id")
+
+        # skip if something is missing
         if not trip_id or not driver_profile_id:
             continue
 
-        # Get the driver's email from our map
+        # map driver ID -> email
         driver_email = driver_id_to_email.get(driver_profile_id, "Unknown Driver")
 
-        # total # of sensor records for this trip
+        # total sensor rows for this trip
         total_sensors_for_trip = sensor_data_per_trip.get(trip_id, 0)
-        # how many of those were invalid
+        # invalid
         invalid_sensors_for_trip = invalid_per_trip.get(trip_id, 0)
+        # valid
+        valid_sensors_for_trip = valid_per_trip.get(trip_id, 0)
 
         row = {
             "driverEmail": driver_email,
             "tripId": trip_id,
-            "sensorDataCount": total_sensors_for_trip,
+            "totalSensorDataCount": total_sensors_for_trip,
             "invalidSensorDataCount": invalid_sensors_for_trip,
+            "validSensorDataCount": valid_sensors_for_trip
         }
         driver_trip_sensor_stats.append(row)
 
-    # Sort rows for a cleaner display
+    # sort for display consistency
     driver_trip_sensor_stats.sort(key=lambda r: (r["driverEmail"], str(r["tripId"])))
 
+    #
+    #  E) Return aggregator dict
+    #
     return {
         "total_drivers": total_drivers,
         "total_trips": total_trips,
-        "total_sensor_data": valid_sensor_data_count_global,
+        "total_sensor_data": total_sensor_data,
         "invalid_sensor_data_count": invalid_sensor_data_count_global,
-        "driver_trip_sensor_stats": driver_trip_sensor_stats,
+        "total_valid_sensor_data": valid_sensor_data_count_global,
+        "driver_trip_sensor_stats": driver_trip_sensor_stats
     }
