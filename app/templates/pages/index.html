@@ -8,17 +8,17 @@
 
   <!-- Summary Cards -->
   <div class="row">
-    <div class="col-md-3 mb-3">
+    <div class="col-md-2 mb-2">
       {% from "partials/card.html" import render_card %}
       {{ render_card("Total Drivers", aggregates.total_drivers, "bg-primary") }}
     </div>
-    <div class="col-md-3 mb-3">
+    <div class="col-md-2 mb-2">
       {{ render_card("Total Trips", aggregates.total_trips, "bg-secondary") }}
     </div>
-    <div class="col-md-3 mb-3">
+    <div class="col-md-2 mb-2">
       {{ render_card("Total Sensor Data", aggregates.total_sensor_data, "bg-success") }}
     </div>
-    <div class="col-md-3 mb-3">
+    <div class="col-md-2 mb-2">
       {{ render_card("Invalid Sensor Data", aggregates.invalid_sensor_data_count, "bg-danger") }}
     </div>
   </div>

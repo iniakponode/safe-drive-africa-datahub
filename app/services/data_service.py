@@ -179,6 +179,7 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     for t in trips:
         trip_id = t.get("id")  # or "trip_id" if that's the correct field
         driver_profile_id = t.get("driver_profile_id")
+        logger(t)
 
         # skip if something is missing
         if not trip_id or not driver_profile_id:
