@@ -26,8 +26,8 @@
     </div>
   </div> 
 
-  {# Build table data for each (driver, trip) row #}
-  {% set table_rows = [] %}
+{# Build table data for each (driver, trip) row #}
+{% set table_rows = [] %}
 {% for row in aggregates.driver_trip_sensor_stats %}
   {% set new_row = {
     "Driver Email": row.driverEmail,
@@ -45,5 +45,6 @@
     ["Driver Email", "Trip ID", "Total", "Invalid", "Valid"],
     table_rows
 ) }}
+
 
 {% endblock %}
