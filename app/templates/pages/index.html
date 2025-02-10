@@ -1,4 +1,3 @@
-{# app/templates/pages/index.html #}
 {% extends "base.html" %}
 
 {% block title %}Dashboard - DataHub{% endblock %}
@@ -9,42 +8,69 @@
   <!-- Summary Cards -->
   <div class="row">
     <div class="col-md-3 mb-3">
-      {% from "partials/card.html" import render_card %}
-      {{ render_card("Total Drivers", aggregates.total_drivers, "bg-primary") }}
+      <div class="card bg-primary text-white">
+        <div class="card-header">Total Drivers</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ aggregates.total_drivers }}</h5>
+        </div>
+      </div>
     </div>
     <div class="col-md-3 mb-3">
-      {{ render_card("Total Trips", aggregates.total_trips, "bg-secondary") }}
+      <div class="card bg-secondary text-white">
+        <div class="card-header">Total Trips</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ aggregates.total_trips }}</h5>
+        </div>
+      </div>
     </div>
     <div class="col-md-3 mb-3">
-      {{ render_card("Total Sensor Data", aggregates.total_sensor_data, "bg-success") }}
+      <div class="card bg-success text-white">
+        <div class="card-header">Total Sensor Data</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ aggregates.total_sensor_data }}</h5>
+        </div>
+      </div>
     </div>
     <div class="col-md-3 mb-3">
-      {{ render_card("Valid Sensor Data", aggregates.total_valid_sensor_data, "bg-info") }}
+      <div class="card bg-danger text-white">
+        <div class="card-header">Invalid Sensor Data</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ aggregates.invalid_sensor_data_count }}</h5>
+        </div>
+      </div>
     </div>
     <div class="col-md-3 mb-3">
-      {{ render_card("Invalid Sensor Data", aggregates.invalid_sensor_data_count, "bg-danger") }}
+      <div class="card bg-info text-white">
+        <div class="card-header">Valid Sensor Data</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ aggregates.total_valid_sensor_data }}</h5>
+        </div>
+      </div>
     </div>
-  </div> 
+  </div>
 
-{# Build table data for each (driver, trip) row #}
-{% set table_rows = [] %}
-{% for row in aggregates.driver_trip_sensor_stats %}
-  {% set new_row = {
-    "Driver Email": row.driverEmail,
-    "Trip ID": row.tripId,
-    "Total": row.totalSensorDataCount,
-    "Invalid": row.invalidSensorDataCount,
-    "Valid": row.validSensorDataCount
-  } %}
-  {% set table_rows = table_rows + [new_row] %}
-{% endfor %}
-
-{% from "partials/table.html" import render_table %}
-{{ render_table(
-    "Sensor Data Per Trip (Per Driver)",
-    ["Driver Email", "Trip ID", "Total", "Invalid", "Valid"],
-    table_rows
-) }}
-
-
+  <!-- Table of Sensor Data per Trip (Per Driver) -->
+  <h2>Sensor Data Per Trip (Per Driver)</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Driver Email</th>
+        <th>Trip ID</th>
+        <th>Total</th>
+        <th>Invalid</th>
+        <th>Valid</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in aggregates.driver_trip_sensor_stats %}
+        <tr>
+          <td>{{ row.driverEmail }}</td>
+          <td>{{ row.tripId }}</td>
+          <td>{{ row.totalSensorDataCount }}</td>
+          <td>{{ row.invalidSensorDataCount }}</td>
+          <td>{{ row.validSensorDataCount }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
