@@ -4,7 +4,9 @@ import httpx
 import logging
 from typing import Any, Dict, List
 
-logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+logger=logging.getLogger()
 
 # Backend endpoints
 DRIVERS_URL = "https://api.safedriveafrica.com/api/driver_profiles/"
@@ -104,6 +106,7 @@ async def fetch_all_data() -> Dict[str, List[Dict[str, Any]]]:
 ################################################################################
 
 def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
+    print("DEBUG: Arrived at process_data()!")
     """
     Build summary stats + a table of per-trip sensor data.
 
@@ -123,7 +126,7 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
           }, ...
         ]
     """
-
+    logger.warning("TEST WARNING: This should definitely appear in the logs!")
     drivers = data.get("drivers", [])
     trips = data.get("trips", [])
     sensor_data = data.get("sensor_data", [])
