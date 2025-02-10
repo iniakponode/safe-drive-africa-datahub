@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Driver Stats - DataHub{% endblock %}
+
+{% block content %}
+  <h1>Driver Statistics</h1>
+  <p>Overview of each driver's trips and sensor data counts.</p>
+  
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Driver Email</th>
+        <th>Number of Trips Driven</th>
+        <th>Valid Sensor Data</th>
+        <th>Invalid Sensor Data</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in stats.driver_stats %}
+        <tr>
+          <td>{{ row.driverEmail }}</td>
+          <td>{{ row.numTrips }}</td>
+          <td>{{ row.validSensorDataCount }}</td>
+          <td>{{ row.invalidSensorDataCount }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <a href="/">Back to Dashboard</a>
+{% endblock %}

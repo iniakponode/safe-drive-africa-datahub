@@ -1,10 +1,8 @@
-# app/services/data_service.py
 import asyncio
 import httpx
 import logging
 from typing import Any, Dict, List
 
-# Configure logging to show INFO messages.
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
@@ -78,9 +76,9 @@ async def fetch_sensor_data_in_chunks(client: httpx.AsyncClient, chunk_size: int
 
 async def fetch_all_data() -> Dict[str, List[Dict[str, Any]]]:
     """
-    Fetches all drivers, trips, and sensor data.
+    Fetch all drivers, trips, and sensor data.
     
-    Returns a dictionary:
+    Returns a dict:
       {
         "drivers": [...],
         "trips": [...],
@@ -103,6 +101,24 @@ async def fetch_all_data() -> Dict[str, List[Dict[str, Any]]]:
 ################################################################################
 
 def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
+    """
+    Build summary stats and a per-trip table.
+
+    Returns a dict with:
+      - total_drivers
+      - total_trips
+      - total_sensor_data
+      - invalid_sensor_data_count (global)
+      - total_valid_sensor_data (global)
+      - driver_trip_sensor_stats: list of rows:
+          {
+            "driverEmail": str,
+            "tripId": str or UUID,
+            "totalSensorDataCount": int,
+            "invalidSensorDataCount": int,
+            "validSensorDataCount": int
+          }
+    """
     print("DEBUG: Arrived at process_data()!")
     logger.warning("TEST WARNING: This should definitely appear in the logs!")
     
@@ -110,7 +126,7 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     trips = data.get("trips", [])
     sensor_data = data.get("sensor_data", [])
     
-    # Log one sample driver and one sample trip.
+    # Log one sample driver and one sample trip for verification.
     if drivers:
         logger.info("Sample driver object: %s", drivers[0])
     else:
@@ -122,7 +138,6 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
         logger.info("No trip objects received.")
     
     # A) Build a map from driverProfileId -> email.
-    # (Using the key "driverProfileId" as seen in your logs.)
     driver_id_to_email = {}
     for d in drivers:
         d_id = d.get("driverProfileId")
@@ -130,25 +145,24 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
         if d_id and email:
             driver_id_to_email[d_id] = email
     
-    # B) Basic totals.
+    # B) Compute basic totals.
     total_drivers = len(drivers)
     total_trips = len(trips)
     total_sensor_data = len(sensor_data)
     
-    # C) Count invalid & valid sensor data globally and per trip.
+    # C) Count invalid and valid sensor data globally and per trip.
     invalid_sensor_data_count_global = 0
     valid_sensor_data_count_global = 0
     
     invalid_per_trip = {}
     valid_per_trip = {}
-    sensor_data_per_trip = {}  # Total sensor rows per trip.
+    sensor_data_per_trip = {}
     
     for s in sensor_data:
         trip_id = s.get("trip_id")
         if not trip_id:
             continue
         
-        # 'values' is expected to be a list, e.g. [0.0, 0.0, 0.0]
         vals = s.get("values", [])
         x = vals[0] if len(vals) > 0 else None
         y = vals[1] if len(vals) > 1 else None
@@ -163,18 +177,13 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
             valid_sensor_data_count_global += 1
             valid_per_trip[trip_id] = valid_per_trip.get(trip_id, 0) + 1
     
-    # D) Build the table: one row per trip.
+    # D) Build the per-trip table.
     driver_trip_sensor_stats = []
     
     for idx, t in enumerate(trips, start=1):
-        # Log the entire trip object for clarity.
         logger.info("Trip #%d: %s", idx, t)
-        
-        # Try both 'id' and 'trip_id' for the trip's unique ID.
         trip_id = t.get("id") or t.get("trip_id")
-        # Use "driverProfileId" as the key for the driver's unique ID.
         driver_profile_id = t.get("driverProfileId") or t.get("driver_profile_id")
-        
         logger.info("Extracted trip_id=%s, driver_profile_id=%s", trip_id, driver_profile_id)
         
         if not trip_id or not driver_profile_id:
@@ -186,7 +195,6 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
         invalid_sensors_for_trip = invalid_per_trip.get(trip_id, 0)
         valid_sensors_for_trip = valid_per_trip.get(trip_id, 0)
         
-        # Build row using the keys that will later be remapped in the template.
         row = {
             "driverEmail": driver_email,
             "tripId": trip_id,
@@ -196,10 +204,7 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
         }
         driver_trip_sensor_stats.append(row)
     
-    # Sort rows for consistent display.
     driver_trip_sensor_stats.sort(key=lambda r: (r["driverEmail"], str(r["tripId"])))
-    
-    # Log the final table data.
     logger.info("Final driver_trip_sensor_stats (total %d rows): %s", len(driver_trip_sensor_stats), driver_trip_sensor_stats)
     
     return {
@@ -211,3 +216,63 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
         "driver_trip_sensor_stats": driver_trip_sensor_stats
     }
 
+################################################################################
+# 4) New Aggregation for Driver Stats
+################################################################################
+
+def process_driver_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
+    """
+    Build aggregated statistics per driver.
+    For each driver (by email), compute:
+      - Number of trips driven
+      - Total valid sensor data count (across all trips)
+      - Total invalid sensor data count (across all trips)
+    
+    Returns a dict:
+      {
+        "driver_stats": [
+          {
+            "driverEmail": str,
+            "numTrips": int,
+            "validSensorDataCount": int,
+            "invalidSensorDataCount": int
+          },
+          ...
+        ]
+      }
+    """
+    # First, reuse the per-trip aggregation from process_data.
+    aggregated = process_data(data)
+    per_trip_stats = aggregated.get("driver_trip_sensor_stats", [])
+    
+    driver_stats = {}
+    for row in per_trip_stats:
+        email = row.get("driverEmail")
+        if not email:
+            continue
+        if email not in driver_stats:
+            driver_stats[email] = {
+                "numTrips": 0,
+                "validSensorDataCount": 0,
+                "invalidSensorDataCount": 0
+            }
+        driver_stats[email]["numTrips"] += 1
+        driver_stats[email]["validSensorDataCount"] += row.get("validSensorDataCount", 0)
+        driver_stats[email]["invalidSensorDataCount"] += row.get("invalidSensorDataCount", 0)
+    
+    # Convert the dictionary to a list for easier template iteration.
+    driver_stats_list = []
+    for email, stats in driver_stats.items():
+        driver_stats_list.append({
+            "driverEmail": email,
+            "numTrips": stats["numTrips"],
+            "validSensorDataCount": stats["validSensorDataCount"],
+            "invalidSensorDataCount": stats["invalidSensorDataCount"]
+        })
+    
+    driver_stats_list.sort(key=lambda r: r["driverEmail"])
+    logger.info("Final driver_stats (total %d rows): %s", len(driver_stats_list), driver_stats_list)
+    
+    return {
+        "driver_stats": driver_stats_list
+    }
