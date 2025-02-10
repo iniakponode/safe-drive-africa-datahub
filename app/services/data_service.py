@@ -113,90 +113,95 @@ def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     trips = data.get("trips", [])
     sensor_data = data.get("sensor_data", [])
     
-    # Log one sample driver object
+    # Log one sample driver and one sample trip for verification.
     if drivers:
         logger.info("Sample driver object: %s", drivers[0])
     else:
         logger.info("No driver objects received.")
     
-    # Log one sample trip object
     if trips:
         logger.info("Sample trip object: %s", trips[0])
     else:
         logger.info("No trip objects received.")
     
-    # A) Build a map from driverProfileId -> email using the expected key
+    # A) Build a map from driverProfileId -> email.
+    # Note: Using the key "driverProfileId" (capital 'P') as seen in your logs.
     driver_id_to_email = {}
     for d in drivers:
-        # Using "driverProfileId" based on your logs (adjust if needed)
-        d_id = d.get("driverProfileId")
+        d_id = d.get("driverProfileId")  # changed from "driver_profile_id" to "driverProfileId"
         email = d.get("email")
         if d_id and email:
             driver_id_to_email[d_id] = email
-
+    
     # B) Basic totals
     total_drivers = len(drivers)
     total_trips = len(trips)
     total_sensor_data = len(sensor_data)
-
-    # C) Count invalid & valid sensor data globally and per trip
+    
+    # C) Count invalid & valid sensor data globally and per trip.
     invalid_sensor_data_count_global = 0
     valid_sensor_data_count_global = 0
-
+    
     invalid_per_trip = {}
     valid_per_trip = {}
-    sensor_data_per_trip = {}  # Total sensor rows per trip
-
+    sensor_data_per_trip = {}  # total sensor records per trip
+    
     for s in sensor_data:
         trip_id = s.get("trip_id")
         if not trip_id:
             continue
-
-        # 'values' is expected to be a list, e.g. [0.0, 0.0, 0.0]
+        
+        # 'values' is a list, e.g. [0.0, 0.0, 0.0]
         vals = s.get("values", [])
         x = vals[0] if len(vals) > 0 else None
         y = vals[1] if len(vals) > 1 else None
         z = vals[2] if len(vals) > 2 else None
-
+        
         sensor_data_per_trip[trip_id] = sensor_data_per_trip.get(trip_id, 0) + 1
-
+        
         if x == 0 and y == 0 and z == 0:
             invalid_sensor_data_count_global += 1
             invalid_per_trip[trip_id] = invalid_per_trip.get(trip_id, 0) + 1
         else:
             valid_sensor_data_count_global += 1
             valid_per_trip[trip_id] = valid_per_trip.get(trip_id, 0) + 1
-
-    # D) Build the table: one row per trip
+    
+    # D) Build the table: one row per trip.
     driver_trip_sensor_stats = []
-
+    
     for idx, t in enumerate(trips, start=1):
-        # Instead of logging every trip, we already logged a sample above.
-        # Use the keys exactly as in your logs:
+        # Log the trip object for clarity.
+        logger.info(f"Trip #{idx}: {t}")
+        
+        # Try both 'id' and 'trip_id' for the primary key.
         trip_id = t.get("id") or t.get("trip_id")
+        # For the driver, use "driverProfileId" (or fallback to "driver_profile_id" if necessary)
         driver_profile_id = t.get("driverProfileId") or t.get("driver_profile_id")
-
+        
+        logger.info(f"Extracted trip_id={trip_id}, driver_profile_id={driver_profile_id}")
+        
         if not trip_id or not driver_profile_id:
             logger.warning(f"Skipping trip {t} because trip_id or driverProfileId is missing.")
             continue
-
+        
         driver_email = driver_id_to_email.get(driver_profile_id, "Unknown Driver")
         total_sensors_for_trip = sensor_data_per_trip.get(trip_id, 0)
         invalid_sensors_for_trip = invalid_per_trip.get(trip_id, 0)
         valid_sensors_for_trip = valid_per_trip.get(trip_id, 0)
-
+        
+        # Use key "sensorDataCount" to match your template (instead of "totalSensorDataCount").
         row = {
             "driverEmail": driver_email,
             "tripId": trip_id,
-            "totalSensorDataCount": total_sensors_for_trip,
+            "sensorDataCount": total_sensors_for_trip,
             "invalidSensorDataCount": invalid_sensors_for_trip,
             "validSensorDataCount": valid_sensors_for_trip
         }
         driver_trip_sensor_stats.append(row)
-
-    # Sort rows for consistent display
+    
+    # Sort rows by driverEmail and then tripId.
     driver_trip_sensor_stats.sort(key=lambda r: (r["driverEmail"], str(r["tripId"])))
-
+    
     return {
         "total_drivers": total_drivers,
         "total_trips": total_trips,
