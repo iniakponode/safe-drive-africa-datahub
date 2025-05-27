@@ -1,4 +1,3 @@
-<!-- app/templates/base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,31 +6,94 @@
   <title>{% block title %}DataHub Analysis Dashboard{% endblock %}</title>
   <!-- Bootstrap CSS CDN -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
-  <!-- Your custom static files -->
-  
-  <!-- Static files referenced with absolute paths -->
   <link rel="stylesheet" href="/static/css/main.css" />
   <link rel="stylesheet" href="/static/css/navbar.css" />
   {% block head %}{% endblock %}
 </head>
 <body>
-  <!-- Include header partial -->
   {% include "partials/header.html" %}
   
   <div class="container my-4">
     {% block content %}{% endblock %}
   </div>
   
-  <!-- Include footer partial -->
   {% include "partials/footer.html" %}
   
-
   <!-- Bootstrap and dependencies JS CDN -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-  <!-- Your custom static JavaScript -->
   <script src="/static/js/main.js"></script>
-  {% block scripts %}{% endblock %}
+  {% block scripts %}
+  <script>
+    // Connect to the live feed SSE endpoint
+    const evtSource = new EventSource("/live");
+    evtSource.onmessage = function(event) {
+      console.log("Live update received:", event.data);
+      try {
+        const data = JSON.parse(event.data);
+        // Update summary cards
+        if (document.getElementById("totalDrivers"))
+          document.getElementById("totalDrivers").textContent = data.aggregates.total_drivers;
+        if (document.getElementById("totalTrips"))
+          document.getElementById("totalTrips").textContent = data.aggregates.total_trips;
+        if (document.getElementById("totalSensorData"))
+          document.getElementById("totalSensorData").textContent = data.aggregates.total_sensor_data;
+        if (document.getElementById("invalidSensorData"))
+          document.getElementById("invalidSensorData").textContent = data.aggregates.invalid_sensor_data_count;
+        if (document.getElementById("validSensorData"))
+          document.getElementById("validSensorData").textContent = data.aggregates.total_valid_sensor_data;
+        
+        // Update the per-trip table
+        const tableBody = document.getElementById("trip-table-body");
+        if (tableBody) {
+          tableBody.innerHTML = "";
+          data.aggregates.driver_trip_sensor_stats.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${row.driverEmail}</td>
+              <td>${row.tripId}</td>
+              <td>${row.totalSensorDataCount}</td>
+              <td>${row.invalidSensorDataCount}</td>
+              <td>${row.validSensorDataCount}</td>
+            `;
+            tableBody.appendChild(tr);
+          });
+        }
+
+        // Update the driver stats table (from driver_stats.html)
+    const driverStatsTableBody = document.getElementById("driver-stats-table-body");
+    if (driverStatsTableBody && parsedData.driver_stats && parsedData.driver_stats.driver_stats) {
+      driverStatsTableBody.innerHTML = ""; // Clear existing rows
+      parsedData.driver_stats.driver_stats.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><span class="math-inline">\{row\.driverEmail\}</td\>
+          <td>{row.numTrips}</td>
+          <td>row.validSensorDataCount</td><td>{row.invalidSensorDataCount}</td>
+          `;
+          driverStatsTableBody.appendChild(tr);
+          });
+
+                  // Update footer totals
+        if(document.getElementById("drivers-total-num-trips"))
+        document.getElementById("drivers-total-num-trips").textContent = parsedData.driver_stats.total_num_trips;
+        if(document.getElementById("drivers-total-valid-sensor-data"))
+        document.getElementById("drivers-total-valid-sensor-data").textContent = parsedData.driver_stats.total_valid_sensor_data;
+        if(document.getElementById("drivers-total-invalid-sensor-data"))
+        document.getElementById("drivers-total-invalid-sensor-data").textContent = parsedData.driver_stats.total_invalid_sensor_data;
+        }
+
+  } catch(e) {
+    console.error("Error processing live update data:", e);
+  }
+};
+
+      } catch(e) {
+        console.error("Error processing live update data:", e);
+      }
+    };
+  </script>
+  {% endblock %}
 </body>
 </html>

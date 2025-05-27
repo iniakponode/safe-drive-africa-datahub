@@ -15,7 +15,7 @@
         <th>Invalid Sensor Data</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="driver-stats-table-body">
       {% for row in stats.driver_stats %}
         <tr>
           <td>{{ row.driverEmail }}</td>
@@ -25,7 +25,15 @@
         </tr>
       {% endfor %}
     </tbody>
+    <tfoot>
+      <tr>
+        <th>Total</th>
+        <th>{{ stats.total_num_trips }}</th>
+        <th>{{ stats.total_valid_sensor_data }}</th>
+        <th>{{ stats.total_invalid_sensor_data }}</th>
+      </tr>
+    </tfoot>
   </table>
   
-  <a href="/">Back to Dashboard</a>
+  <a href="/" class="btn btn-secondary">Back to Dashboard</a>
 {% endblock %}

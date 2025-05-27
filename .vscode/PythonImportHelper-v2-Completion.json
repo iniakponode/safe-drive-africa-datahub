@@ -1,0 +1,470 @@
+[
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Request",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "Request",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "APIRouter",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "FastAPI",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTMLResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
+        "documentation": {}
+    },
+    {
+        "label": "HTMLResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
+        "documentation": {}
+    },
+    {
+        "label": "Jinja2Templates",
+        "importPath": "fastapi.templating",
+        "description": "fastapi.templating",
+        "isExtraImport": true,
+        "detail": "fastapi.templating",
+        "documentation": {}
+    },
+    {
+        "label": "Jinja2Templates",
+        "importPath": "fastapi.templating",
+        "description": "fastapi.templating",
+        "isExtraImport": true,
+        "detail": "fastapi.templating",
+        "documentation": {}
+    },
+    {
+        "label": "get_cached_data",
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "isExtraImport": true,
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "get_cached_data",
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "isExtraImport": true,
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "get_cached_data",
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "isExtraImport": true,
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "refresh_cache_periodically",
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "isExtraImport": true,
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_all_data",
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "isExtraImport": true,
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "process_data",
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "isExtraImport": true,
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_all_data",
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "isExtraImport": true,
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "process_driver_data",
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "isExtraImport": true,
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "fetch_all_data",
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "isExtraImport": true,
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "process_data",
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "isExtraImport": true,
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "process_driver_data",
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "isExtraImport": true,
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "EventSourceResponse",
+        "importPath": "sse_starlette.sse",
+        "description": "sse_starlette.sse",
+        "isExtraImport": true,
+        "detail": "sse_starlette.sse",
+        "documentation": {}
+    },
+    {
+        "label": "asyncio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "asyncio",
+        "description": "asyncio",
+        "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "httpx",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "httpx",
+        "description": "httpx",
+        "detail": "httpx",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "hashlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "hashlib",
+        "description": "hashlib",
+        "detail": "hashlib",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "dotenv",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "uvicorn",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uvicorn",
+        "description": "uvicorn",
+        "detail": "uvicorn",
+        "documentation": {}
+    },
+    {
+        "label": "StaticFiles",
+        "importPath": "fastapi.staticfiles",
+        "description": "fastapi.staticfiles",
+        "isExtraImport": true,
+        "detail": "fastapi.staticfiles",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "importPath": "app.routes",
+        "description": "app.routes",
+        "isExtraImport": true,
+        "detail": "app.routes",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.routes.dashboard",
+        "description": "app.routes.dashboard",
+        "peekOfCode": "router = APIRouter()\ntemplates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/\", response_class=HTMLResponse)\nasync def dashboard(request: Request):\n    cached = get_cached_data()\n    if cached is None or \"aggregates\" not in cached: # Ensure aggregates key exists\n        data = await fetch_all_data()\n        aggregates = process_data(data)\n        # Optionally, you might want to update the cache here if it was None\n        # This depends on how your cache is populated initially if empty",
+        "detail": "app.routes.dashboard",
+        "documentation": {}
+    },
+    {
+        "label": "templates",
+        "kind": 5,
+        "importPath": "app.routes.dashboard",
+        "description": "app.routes.dashboard",
+        "peekOfCode": "templates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/\", response_class=HTMLResponse)\nasync def dashboard(request: Request):\n    cached = get_cached_data()\n    if cached is None or \"aggregates\" not in cached: # Ensure aggregates key exists\n        data = await fetch_all_data()\n        aggregates = process_data(data)\n        # Optionally, you might want to update the cache here if it was None\n        # This depends on how your cache is populated initially if empty\n    else:",
+        "detail": "app.routes.dashboard",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.routes.driver_stats",
+        "description": "app.routes.driver_stats",
+        "peekOfCode": "router = APIRouter()\ntemplates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/drivers\", response_class=HTMLResponse)\nasync def driver_stats(request: Request):\n    cached = get_cached_data()\n    stats = None\n    if cached is None or \"driver_stats\" not in cached: # Ensure driver_stats key exists\n        data = await fetch_all_data()\n        stats = process_driver_data(data)\n        # Optionally, update cache",
+        "detail": "app.routes.driver_stats",
+        "documentation": {}
+    },
+    {
+        "label": "templates",
+        "kind": 5,
+        "importPath": "app.routes.driver_stats",
+        "description": "app.routes.driver_stats",
+        "peekOfCode": "templates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/drivers\", response_class=HTMLResponse)\nasync def driver_stats(request: Request):\n    cached = get_cached_data()\n    stats = None\n    if cached is None or \"driver_stats\" not in cached: # Ensure driver_stats key exists\n        data = await fetch_all_data()\n        stats = process_driver_data(data)\n        # Optionally, update cache\n    else:",
+        "detail": "app.routes.driver_stats",
+        "documentation": {}
+    },
+    {
+        "label": "router",
+        "kind": 5,
+        "importPath": "app.routes.live",
+        "description": "app.routes.live",
+        "peekOfCode": "router = APIRouter()\n@router.get(\"/live\")\nasync def live_feed():\n    async def event_generator():\n        while True:\n            data = get_cached_data()\n            if data is not None:\n                yield {\"event\": \"update\", \"data\": data}\n            await asyncio.sleep(1)\n    return EventSourceResponse(event_generator())",
+        "detail": "app.routes.live",
+        "documentation": {}
+    },
+    {
+        "label": "process_data",
+        "kind": 2,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:\n    \"\"\"\n    Aggregates per-trip sensor data statistics.\n    For each trip, returns:\n      - driverEmail (mapped via driverProfileId → email)\n      - tripId (from \"id\" or \"trip_id\")\n      - totalSensorDataCount: number of sensor records for that trip\n      - invalidSensorDataCount: count of records where sensor \"values\" equals [0, 0, 0]\n      - validSensorDataCount: remaining records\n    Also returns global totals.",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "process_driver_data",
+        "kind": 2,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "def process_driver_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:\n    \"\"\"\n    Aggregates per-driver statistics from per-trip data.\n    For each driver (by email), computes:\n      - Number of trips driven\n      - Total valid sensor data count (across all trips)\n      - Total invalid sensor data count (across all trips)\n    Drivers with no trips are included with 0 values.\n    Returns a dict:\n      {",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "logger = logging.getLogger()\n# Backend endpoints\nDRIVERS_URL = \"https://api.safedriveafrica.com/api/driver_profiles/\"\nTRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "DRIVERS_URL",
+        "kind": 5,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "DRIVERS_URL = \"https://api.safedriveafrica.com/api/driver_profiles/\"\nTRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=999999\"",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "TRIPS_URL",
+        "kind": 5,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "TRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=999999\"\n        resp = await client.get(url)",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "SENSOR_URL",
+        "kind": 5,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "SENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=999999\"\n        resp = await client.get(url)\n        resp.raise_for_status()",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "get_cached_data",
+        "kind": 2,
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "peekOfCode": "def get_cached_data():\n    \"\"\"Return the latest cached data.\"\"\"\n    return _cached_data\ndef compute_checksum(data: dict) -> str:\n    \"\"\"Compute an MD5 checksum of the given data (JSON serialized with sorted keys).\"\"\"\n    try:\n        # Convert the data to a JSON string with sorted keys.\n        data_str = json.dumps(data, sort_keys=True)\n        return hashlib.md5(data_str.encode(\"utf-8\")).hexdigest()\n    except Exception as e:",
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "compute_checksum",
+        "kind": 2,
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "peekOfCode": "def compute_checksum(data: dict) -> str:\n    \"\"\"Compute an MD5 checksum of the given data (JSON serialized with sorted keys).\"\"\"\n    try:\n        # Convert the data to a JSON string with sorted keys.\n        data_str = json.dumps(data, sort_keys=True)\n        return hashlib.md5(data_str.encode(\"utf-8\")).hexdigest()\n    except Exception as e:\n        logger.error(\"Error computing checksum: %s\", e)\n        return \"\"\nasync def refresh_cache_periodically():",
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nREFRESH_INTERVAL = 10  # seconds\n_cached_data = None  \n_cached_checksum = None\ndef get_cached_data():\n    \"\"\"Return the latest cached data.\"\"\"\n    return _cached_data\ndef compute_checksum(data: dict) -> str:\n    \"\"\"Compute an MD5 checksum of the given data (JSON serialized with sorted keys).\"\"\"\n    try:",
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "REFRESH_INTERVAL",
+        "kind": 5,
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "peekOfCode": "REFRESH_INTERVAL = 10  # seconds\n_cached_data = None  \n_cached_checksum = None\ndef get_cached_data():\n    \"\"\"Return the latest cached data.\"\"\"\n    return _cached_data\ndef compute_checksum(data: dict) -> str:\n    \"\"\"Compute an MD5 checksum of the given data (JSON serialized with sorted keys).\"\"\"\n    try:\n        # Convert the data to a JSON string with sorted keys.",
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "_cached_data",
+        "kind": 5,
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "peekOfCode": "_cached_data = None  \n_cached_checksum = None\ndef get_cached_data():\n    \"\"\"Return the latest cached data.\"\"\"\n    return _cached_data\ndef compute_checksum(data: dict) -> str:\n    \"\"\"Compute an MD5 checksum of the given data (JSON serialized with sorted keys).\"\"\"\n    try:\n        # Convert the data to a JSON string with sorted keys.\n        data_str = json.dumps(data, sort_keys=True)",
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "_cached_checksum",
+        "kind": 5,
+        "importPath": "app.cache",
+        "description": "app.cache",
+        "peekOfCode": "_cached_checksum = None\ndef get_cached_data():\n    \"\"\"Return the latest cached data.\"\"\"\n    return _cached_data\ndef compute_checksum(data: dict) -> str:\n    \"\"\"Compute an MD5 checksum of the given data (JSON serialized with sorted keys).\"\"\"\n    try:\n        # Convert the data to a JSON string with sorted keys.\n        data_str = json.dumps(data, sort_keys=True)\n        return hashlib.md5(data_str.encode(\"utf-8\")).hexdigest()",
+        "detail": "app.cache",
+        "documentation": {}
+    },
+    {
+        "label": "ENVIRONMENT",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "ENVIRONMENT = os.getenv(\"ENVIRONMENT\", \"development\")\nif ENVIRONMENT == \"development\":\n    dotenv.load_dotenv()\napp = FastAPI(\n    title=\"DataHub Analysis Dashboard\"\n)\n# Mount static files (if any)\napp.mount(\"/static\", StaticFiles(directory=\"app/static\"), name=\"static\")\n# Include all routes\napp.include_router(router)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "app = FastAPI(\n    title=\"DataHub Analysis Dashboard\"\n)\n# Mount static files (if any)\napp.mount(\"/static\", StaticFiles(directory=\"app/static\"), name=\"static\")\n# Include all routes\napp.include_router(router)\n@app.on_event(\"startup\")\nasync def startup_event():\n    # Start background cache refresh task.",
+        "detail": "main",
+        "documentation": {}
+    }
+]

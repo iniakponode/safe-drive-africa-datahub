@@ -4,17 +4,15 @@
 
 {% block content %}
   <h1 class="mb-4">Experiment Data Overview</h1>
-<!-- Link to Driver Stats Page -->
-<p>
-  <a href="/drivers" class="btn btn-primary">View Driver Specific Statistics</a>
-</p>
-  <!-- Summary Cards -->
+  
+  
+  <!-- Summary Cards with element IDs for live updates -->
   <div class="row">
     <div class="col-md-3 mb-3">
       <div class="card bg-primary text-white">
         <div class="card-header">Total Drivers</div>
         <div class="card-body">
-          <h5 class="card-title">{{ aggregates.total_drivers }}</h5>
+          <h5 id="totalDrivers" class="card-title">{{ aggregates.total_drivers }}</h5>
         </div>
       </div>
     </div>
@@ -22,7 +20,7 @@
       <div class="card bg-secondary text-white">
         <div class="card-header">Total Trips</div>
         <div class="card-body">
-          <h5 class="card-title">{{ aggregates.total_trips }}</h5>
+          <h5 id="totalTrips" class="card-title">{{ aggregates.total_trips }}</h5>
         </div>
       </div>
     </div>
@@ -30,7 +28,7 @@
       <div class="card bg-success text-white">
         <div class="card-header">Total Sensor Data</div>
         <div class="card-body">
-          <h5 class="card-title">{{ aggregates.total_sensor_data }}</h5>
+          <h5 id="totalSensorData" class="card-title">{{ aggregates.total_sensor_data }}</h5>
         </div>
       </div>
     </div>
@@ -38,7 +36,7 @@
       <div class="card bg-danger text-white">
         <div class="card-header">Invalid Sensor Data</div>
         <div class="card-body">
-          <h5 class="card-title">{{ aggregates.invalid_sensor_data_count }}</h5>
+          <h5 id="invalidSensorData" class="card-title">{{ aggregates.invalid_sensor_data_count }}</h5>
         </div>
       </div>
     </div>
@@ -46,13 +44,13 @@
       <div class="card bg-info text-white">
         <div class="card-header">Valid Sensor Data</div>
         <div class="card-body">
-          <h5 class="card-title">{{ aggregates.total_valid_sensor_data }}</h5>
+          <h5 id="validSensorData" class="card-title">{{ aggregates.total_valid_sensor_data }}</h5>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Table of Sensor Data per Trip (Per Driver) -->
+  
+  <!-- Table: Sensor Data Per Trip (Per Driver) -->
   <h2>Sensor Data Per Trip (Per Driver)</h2>
   <table class="table table-striped">
     <thead>
@@ -64,7 +62,7 @@
         <th>Valid</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="trip-table-body">
       {% for row in aggregates.driver_trip_sensor_stats %}
         <tr>
           <td>{{ row.driverEmail }}</td>

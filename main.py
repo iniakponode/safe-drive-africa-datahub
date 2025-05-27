@@ -1,31 +1,35 @@
 # app/main.py
-from fastapi import FastAPI
-from app.routes import router
-from fastapi.staticfiles import StaticFiles
-import uvicorn
+import asyncio
 import os
 import dotenv
+from fastapi import FastAPI
+import uvicorn
+from fastapi.staticfiles import StaticFiles
+from app.routes import router
+from app.cache import refresh_cache_periodically
 
-# Load .env only for local development
+# Load environment variables (for local development)
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 if ENVIRONMENT == "development":
     dotenv.load_dotenv()
 
 app = FastAPI(
-    title="DataHub Analysis Dashboard",
-    # docs_url="/docs",
-    # redoc_url="/redoc"
+    title="DataHub Analysis Dashboard"
 )
 
-# Mount the static files directory so they are accessible at /static
+# Mount static files (if any)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# Include the dashboard routes (more routers can be added as your app scales)
+# Include all routes
 app.include_router(router)
 
-if __name__ == "__main__":
-   # Set host and port based on environment
-    host = "0.0.0.0" if ENVIRONMENT == "production" else "127.0.0.1"
-    port = int(os.environ.get("PORT", 8001))  # Use Heroku's $PORT or default for local
+@app.on_event("startup")
+async def startup_event():
+    # Start background cache refresh task.
+    asyncio.create_task(refresh_cache_periodically())
 
+if __name__ == "__main__":
+    # Set host and port based on environment.
+    host = "0.0.0.0" if ENVIRONMENT == "production" else "127.0.0.1"
+    port = int(os.environ.get("PORT", 8001))
     uvicorn.run("main:app", reload=(ENVIRONMENT == "development"), host=host, port=port)
