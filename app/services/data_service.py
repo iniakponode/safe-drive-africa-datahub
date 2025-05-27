@@ -22,7 +22,7 @@ SENSOR_URL = "https://api.safedriveafrica.com/api/raw_sensor_data/"
 async def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:
     """Fetch all DriverProfiles in one request (using a large limit)."""
     try:
-        url = f"{DRIVERS_URL}?skip=0&limit=999999"
+        url = f"{DRIVERS_URL}?skip=0&limit=1000"
         resp = await client.get(url)
         resp.raise_for_status()
         drivers = resp.json()

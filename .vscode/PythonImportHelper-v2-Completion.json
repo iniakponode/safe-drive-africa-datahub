@@ -373,7 +373,7 @@
         "kind": 5,
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
-        "peekOfCode": "DRIVERS_URL = \"https://api.safedriveafrica.com/api/driver_profiles/\"\nTRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=999999\"",
+        "peekOfCode": "DRIVERS_URL = \"https://api.safedriveafrica.com/api/driver_profiles/\"\nTRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=1000\"",
         "detail": "app.services.data_service",
         "documentation": {}
     },
@@ -382,7 +382,7 @@
         "kind": 5,
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
-        "peekOfCode": "TRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=999999\"\n        resp = await client.get(url)",
+        "peekOfCode": "TRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=1000\"\n        resp = await client.get(url)",
         "detail": "app.services.data_service",
         "documentation": {}
     },
@@ -391,7 +391,7 @@
         "kind": 5,
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
-        "peekOfCode": "SENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=999999\"\n        resp = await client.get(url)\n        resp.raise_for_status()",
+        "peekOfCode": "SENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=1000\"\n        resp = await client.get(url)\n        resp.raise_for_status()",
         "detail": "app.services.data_service",
         "documentation": {}
     },
