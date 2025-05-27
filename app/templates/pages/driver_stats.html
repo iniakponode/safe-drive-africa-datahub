@@ -25,14 +25,14 @@
         </tr>
       {% endfor %}
     </tbody>
-    <tfoot>
-      <tr>
-        <th>Total</th>
-        <th>{{ stats.total_num_trips }}</th>
-        <th>{{ stats.total_valid_sensor_data }}</th>
-        <th>{{ stats.total_invalid_sensor_data }}</th>
-      </tr>
-    </tfoot>
+    <tfoot id="driver-stats-table-footer">
+  <tr>
+    <th>Total</th>
+    <th id="drivers-total-num-trips">{{ stats.total_num_trips }}</th>
+    <th id="drivers-total-valid-sensor-data">{{ stats.total_valid_sensor_data }}</th>
+    <th id="drivers-total-invalid-sensor-data">{{ stats.total_invalid_sensor_data }}</th>
+  </tr>
+</tfoot>
   </table>
   
   <a href="/" class="btn btn-secondary">Back to Dashboard</a>
