@@ -80,6 +80,15 @@
         "documentation": {}
     },
     {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
         "label": "get_cached_data",
         "importPath": "app.cache",
         "description": "app.cache",
@@ -112,7 +121,7 @@
         "documentation": {}
     },
     {
-        "label": "fetch_all_data",
+        "label": "fetch_all_processed_data",
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
         "isExtraImport": true,
@@ -120,7 +129,7 @@
         "documentation": {}
     },
     {
-        "label": "process_data",
+        "label": "fetch_all_processed_data",
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
         "isExtraImport": true,
@@ -128,39 +137,7 @@
         "documentation": {}
     },
     {
-        "label": "fetch_all_data",
-        "importPath": "app.services.data_service",
-        "description": "app.services.data_service",
-        "isExtraImport": true,
-        "detail": "app.services.data_service",
-        "documentation": {}
-    },
-    {
-        "label": "process_driver_data",
-        "importPath": "app.services.data_service",
-        "description": "app.services.data_service",
-        "isExtraImport": true,
-        "detail": "app.services.data_service",
-        "documentation": {}
-    },
-    {
-        "label": "fetch_all_data",
-        "importPath": "app.services.data_service",
-        "description": "app.services.data_service",
-        "isExtraImport": true,
-        "detail": "app.services.data_service",
-        "documentation": {}
-    },
-    {
-        "label": "process_data",
-        "importPath": "app.services.data_service",
-        "description": "app.services.data_service",
-        "isExtraImport": true,
-        "detail": "app.services.data_service",
-        "documentation": {}
-    },
-    {
-        "label": "process_driver_data",
+        "label": "fetch_all_processed_data",
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
         "isExtraImport": true,
@@ -203,15 +180,6 @@
         "documentation": {}
     },
     {
-        "label": "logging",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "logging",
-        "description": "logging",
-        "detail": "logging",
-        "documentation": {}
-    },
-    {
         "label": "Any",
         "importPath": "typing",
         "description": "typing",
@@ -233,6 +201,54 @@
         "description": "typing",
         "isExtraImport": true,
         "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Union",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "BaseModel",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "ValidationInfo",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "field_validator",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "ValidationError",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
         "documentation": {}
     },
     {
@@ -297,11 +313,20 @@
         "documentation": {}
     },
     {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "app.routes.dashboard",
+        "description": "app.routes.dashboard",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nrouter = APIRouter()\ntemplates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/\", response_class=HTMLResponse)\nasync def main_dashboard_page(request: Request):\n    processed_data_payload = get_cached_data()\n    data_unavailable_for_template = False\n    # Default structure for the old 'aggregates' object\n    template_aggregates = {\n        'total_drivers': 0,",
+        "detail": "app.routes.dashboard",
+        "documentation": {}
+    },
+    {
         "label": "router",
         "kind": 5,
         "importPath": "app.routes.dashboard",
         "description": "app.routes.dashboard",
-        "peekOfCode": "router = APIRouter()\ntemplates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/\", response_class=HTMLResponse)\nasync def dashboard(request: Request):\n    cached = get_cached_data()\n    if cached is None or \"aggregates\" not in cached: # Ensure aggregates key exists\n        data = await fetch_all_data()\n        aggregates = process_data(data)\n        # Optionally, you might want to update the cache here if it was None\n        # This depends on how your cache is populated initially if empty",
+        "peekOfCode": "router = APIRouter()\ntemplates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/\", response_class=HTMLResponse)\nasync def main_dashboard_page(request: Request):\n    processed_data_payload = get_cached_data()\n    data_unavailable_for_template = False\n    # Default structure for the old 'aggregates' object\n    template_aggregates = {\n        'total_drivers': 0,\n        'total_trips': 0,",
         "detail": "app.routes.dashboard",
         "documentation": {}
     },
@@ -310,8 +335,17 @@
         "kind": 5,
         "importPath": "app.routes.dashboard",
         "description": "app.routes.dashboard",
-        "peekOfCode": "templates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/\", response_class=HTMLResponse)\nasync def dashboard(request: Request):\n    cached = get_cached_data()\n    if cached is None or \"aggregates\" not in cached: # Ensure aggregates key exists\n        data = await fetch_all_data()\n        aggregates = process_data(data)\n        # Optionally, you might want to update the cache here if it was None\n        # This depends on how your cache is populated initially if empty\n    else:",
+        "peekOfCode": "templates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/\", response_class=HTMLResponse)\nasync def main_dashboard_page(request: Request):\n    processed_data_payload = get_cached_data()\n    data_unavailable_for_template = False\n    # Default structure for the old 'aggregates' object\n    template_aggregates = {\n        'total_drivers': 0,\n        'total_trips': 0,\n        'total_sensor_data': 0, # This will be 0 if sensor API returns no data",
         "detail": "app.routes.dashboard",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "app.routes.driver_stats",
+        "description": "app.routes.driver_stats",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nrouter = APIRouter()\ntemplates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/drivers\", response_class=HTMLResponse)\nasync def driver_statistics_page(request: Request):\n    \"\"\"\n    Serves the driver statistics page.\n    It retrieves processed data from a cache. If the cache is empty (e.g., on first startup),\n    it can optionally perform an initial data fetch and process.\n    \"\"\"",
+        "detail": "app.routes.driver_stats",
         "documentation": {}
     },
     {
@@ -319,7 +353,7 @@
         "kind": 5,
         "importPath": "app.routes.driver_stats",
         "description": "app.routes.driver_stats",
-        "peekOfCode": "router = APIRouter()\ntemplates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/drivers\", response_class=HTMLResponse)\nasync def driver_stats(request: Request):\n    cached = get_cached_data()\n    stats = None\n    if cached is None or \"driver_stats\" not in cached: # Ensure driver_stats key exists\n        data = await fetch_all_data()\n        stats = process_driver_data(data)\n        # Optionally, update cache",
+        "peekOfCode": "router = APIRouter()\ntemplates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/drivers\", response_class=HTMLResponse)\nasync def driver_statistics_page(request: Request):\n    \"\"\"\n    Serves the driver statistics page.\n    It retrieves processed data from a cache. If the cache is empty (e.g., on first startup),\n    it can optionally perform an initial data fetch and process.\n    \"\"\"\n    processed_data_payload = get_cached_data()",
         "detail": "app.routes.driver_stats",
         "documentation": {}
     },
@@ -328,7 +362,7 @@
         "kind": 5,
         "importPath": "app.routes.driver_stats",
         "description": "app.routes.driver_stats",
-        "peekOfCode": "templates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/drivers\", response_class=HTMLResponse)\nasync def driver_stats(request: Request):\n    cached = get_cached_data()\n    stats = None\n    if cached is None or \"driver_stats\" not in cached: # Ensure driver_stats key exists\n        data = await fetch_all_data()\n        stats = process_driver_data(data)\n        # Optionally, update cache\n    else:",
+        "peekOfCode": "templates = Jinja2Templates(directory=\"app/templates\")\n@router.get(\"/drivers\", response_class=HTMLResponse)\nasync def driver_statistics_page(request: Request):\n    \"\"\"\n    Serves the driver statistics page.\n    It retrieves processed data from a cache. If the cache is empty (e.g., on first startup),\n    it can optionally perform an initial data fetch and process.\n    \"\"\"\n    processed_data_payload = get_cached_data()\n    data_unavailable_for_template = False",
         "detail": "app.routes.driver_stats",
         "documentation": {}
     },
@@ -342,20 +376,56 @@
         "documentation": {}
     },
     {
-        "label": "process_data",
-        "kind": 2,
+        "label": "BaseApiModel",
+        "kind": 6,
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
-        "peekOfCode": "def process_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:\n    \"\"\"\n    Aggregates per-trip sensor data statistics.\n    For each trip, returns:\n      - driverEmail (mapped via driverProfileId → email)\n      - tripId (from \"id\" or \"trip_id\")\n      - totalSensorDataCount: number of sensor records for that trip\n      - invalidSensorDataCount: count of records where sensor \"values\" equals [0, 0, 0]\n      - validSensorDataCount: remaining records\n    Also returns global totals.",
+        "peekOfCode": "class BaseApiModel(BaseModel):\n    class Config:\n        extra = 'ignore' # Ignore extra fields from API not defined in model\n    @classmethod\n    def strip_empty_str(cls, v: Any) -> Optional[Any]:\n        if isinstance(v, str) and not v.strip():\n            return None\n        return v\nclass DriverProfileModel(BaseApiModel):\n    driverProfileId: str",
         "detail": "app.services.data_service",
         "documentation": {}
     },
     {
-        "label": "process_driver_data",
+        "label": "DriverProfileModel",
+        "kind": 6,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "class DriverProfileModel(BaseApiModel):\n    driverProfileId: str\n    email: Optional[str] = None\n    # name: Optional[str] = None # Example: Add other fields you care about\n    @field_validator('driverProfileId', 'email', mode='before')\n    @classmethod\n    def normalize_and_strip_fields(cls, v: Any, info: ValidationInfo): # info can be used for field_name if needed\n        \"\"\"\n        Normalizes string fields: strips whitespace, converts empty strings to None.\n        \"\"\"",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "TripModel",
+        "kind": 6,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "class TripModel(BaseApiModel):\n    # Assuming 'id' or 'trip_id' is the trip's own identifier\n    # We'll handle potential aliasing during raw data parsing\n    trip_id: str\n    driverProfileId: Optional[str] = None\n    @field_validator('trip_id', 'driverProfileId', mode='before')\n    @classmethod\n    def normalize_empty_strings_to_none(cls, v: Any, info: ValidationInfo): # info can be useful for context if needed\n        # info.field_name will tell you if it's 'trip_id' or 'driverProfileId'\n        if isinstance(v, str):",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "SensorValueItemModel",
+        "kind": 6,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "class SensorValueItemModel(BaseModel):\n    # Define if sensor values have a specific structure, otherwise use List[float]\n    # For simplicity, assuming List[float] for now.\n    pass\nclass SensorDataModel(BaseApiModel):\n    # We'll handle potential aliasing for trip_id during raw data parsing\n    trip_id: Optional[str] = None\n    values: List[Union[float, int]] = [] # Allow int or float\n    _normalize_trip_id = field_validator('trip_id', mode='before')(BaseApiModel.strip_empty_str)\n    @field_validator('values', mode='before')",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "SensorDataModel",
+        "kind": 6,
+        "importPath": "app.services.data_service",
+        "description": "app.services.data_service",
+        "peekOfCode": "class SensorDataModel(BaseApiModel):\n    # We'll handle potential aliasing for trip_id during raw data parsing\n    trip_id: Optional[str] = None\n    values: List[Union[float, int]] = [] # Allow int or float\n    _normalize_trip_id = field_validator('trip_id', mode='before')(BaseApiModel.strip_empty_str)\n    @field_validator('values', mode='before')\n    @classmethod\n    def parse_sensor_values(cls, v: Any) -> List[Union[float, int]]:\n        if isinstance(v, str):\n            try:",
+        "detail": "app.services.data_service",
+        "documentation": {}
+    },
+    {
+        "label": "process_and_aggregate_data",
         "kind": 2,
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
-        "peekOfCode": "def process_driver_data(data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:\n    \"\"\"\n    Aggregates per-driver statistics from per-trip data.\n    For each driver (by email), computes:\n      - Number of trips driven\n      - Total valid sensor data count (across all trips)\n      - Total invalid sensor data count (across all trips)\n    Drivers with no trips are included with 0 values.\n    Returns a dict:\n      {",
+        "peekOfCode": "def process_and_aggregate_data(\n    valid_drivers: List[DriverProfileModel],\n    valid_trips: List[TripModel],\n    valid_sensor_data: List[SensorDataModel]\n) -> Dict[str, Any]:\n    logger.info(f\"Processing data: {len(valid_drivers)} valid drivers, {len(valid_trips)} valid trips, {len(valid_sensor_data)} valid sensor data records.\")\n    # 1. Create driver lookup map (from validated drivers)\n    #    Using driverProfileId as key.\n    drivers_map: Dict[str, DriverProfileModel] = {\n        driver.driverProfileId: driver for driver in valid_drivers if driver.driverProfileId",
         "detail": "app.services.data_service",
         "documentation": {}
     },
@@ -364,7 +434,7 @@
         "kind": 5,
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
-        "peekOfCode": "logger = logging.getLogger()\n# Backend endpoints\nDRIVERS_URL = \"https://api.safedriveafrica.com/api/driver_profiles/\"\nTRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"",
+        "peekOfCode": "logger = logging.getLogger(__name__)\nDRIVERS_URL = \"https://api.safedriveafrica.com/api/driver_profiles/\"\nTRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n# --- Pydantic Models for Data Validation ---\nclass BaseApiModel(BaseModel):\n    class Config:\n        extra = 'ignore' # Ignore extra fields from API not defined in model\n    @classmethod\n    def strip_empty_str(cls, v: Any) -> Optional[Any]:",
         "detail": "app.services.data_service",
         "documentation": {}
     },
@@ -373,7 +443,7 @@
         "kind": 5,
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
-        "peekOfCode": "DRIVERS_URL = \"https://api.safedriveafrica.com/api/driver_profiles/\"\nTRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=1000\"",
+        "peekOfCode": "DRIVERS_URL = \"https://api.safedriveafrica.com/api/driver_profiles/\"\nTRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n# --- Pydantic Models for Data Validation ---\nclass BaseApiModel(BaseModel):\n    class Config:\n        extra = 'ignore' # Ignore extra fields from API not defined in model\n    @classmethod\n    def strip_empty_str(cls, v: Any) -> Optional[Any]:\n        if isinstance(v, str) and not v.strip():",
         "detail": "app.services.data_service",
         "documentation": {}
     },
@@ -382,7 +452,7 @@
         "kind": 5,
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
-        "peekOfCode": "TRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=1000\"\n        resp = await client.get(url)",
+        "peekOfCode": "TRIPS_URL = \"https://api.safedriveafrica.com/api/trips/\"\nSENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n# --- Pydantic Models for Data Validation ---\nclass BaseApiModel(BaseModel):\n    class Config:\n        extra = 'ignore' # Ignore extra fields from API not defined in model\n    @classmethod\n    def strip_empty_str(cls, v: Any) -> Optional[Any]:\n        if isinstance(v, str) and not v.strip():\n            return None",
         "detail": "app.services.data_service",
         "documentation": {}
     },
@@ -391,7 +461,7 @@
         "kind": 5,
         "importPath": "app.services.data_service",
         "description": "app.services.data_service",
-        "peekOfCode": "SENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n################################################################################\n# 1) Chunked Fetch Helpers\n################################################################################\nasync def fetch_all_drivers(client: httpx.AsyncClient) -> List[Dict[str, Any]]:\n    \"\"\"Fetch all DriverProfiles in one request (using a large limit).\"\"\"\n    try:\n        url = f\"{DRIVERS_URL}?skip=0&limit=1000\"\n        resp = await client.get(url)\n        resp.raise_for_status()",
+        "peekOfCode": "SENSOR_URL = \"https://api.safedriveafrica.com/api/raw_sensor_data/\"\n# --- Pydantic Models for Data Validation ---\nclass BaseApiModel(BaseModel):\n    class Config:\n        extra = 'ignore' # Ignore extra fields from API not defined in model\n    @classmethod\n    def strip_empty_str(cls, v: Any) -> Optional[Any]:\n        if isinstance(v, str) and not v.strip():\n            return None\n        return v",
         "detail": "app.services.data_service",
         "documentation": {}
     },
@@ -409,7 +479,7 @@
         "kind": 2,
         "importPath": "app.cache",
         "description": "app.cache",
-        "peekOfCode": "def compute_checksum(data: dict) -> str:\n    \"\"\"Compute an MD5 checksum of the given data (JSON serialized with sorted keys).\"\"\"\n    try:\n        # Convert the data to a JSON string with sorted keys.\n        data_str = json.dumps(data, sort_keys=True)\n        return hashlib.md5(data_str.encode(\"utf-8\")).hexdigest()\n    except Exception as e:\n        logger.error(\"Error computing checksum: %s\", e)\n        return \"\"\nasync def refresh_cache_periodically():",
+        "peekOfCode": "def compute_checksum(data: dict) -> str:\n    \"\"\"Compute an MD5 checksum of the given data (JSON serialized with sorted keys).\"\"\"\n    try:\n        # Convert the data to a JSON string with sorted keys.\n        data_str = json.dumps(data, sort_keys=True)\n        return hashlib.md5(data_str.encode(\"utf-8\")).hexdigest()\n    except Exception as e:\n        logger.error(\"Error computing checksum: %s\", e)\n        return \"\"\n# from app.services.data_service import fetch_all_processed_data # New import",
         "detail": "app.cache",
         "documentation": {}
     },

@@ -4,7 +4,7 @@ import time
 import json
 import hashlib
 import logging
-from app.services.data_service import fetch_all_data, process_data, process_driver_data
+from app.services.data_service import fetch_all_processed_data
 
 logger = logging.getLogger(__name__)
 
@@ -27,22 +27,24 @@ def compute_checksum(data: dict) -> str:
         logger.error("Error computing checksum: %s", e)
         return ""
 
+# from app.services.data_service import fetch_all_processed_data # New import
+
 async def refresh_cache_periodically():
     global _cached_data, _cached_checksum
     while True:
-        logger.info("Refreshing cache...")
+        logger.info("Refreshing cache with new data service...")
         try:
-            raw_data = await fetch_all_data()
-            aggregated = process_data(raw_data)
-            driver_stats = process_driver_data(raw_data)
-            new_cache = {"aggregates": aggregated, "driver_stats": driver_stats}
-            new_checksum = compute_checksum(new_cache)
+            # This single call gets all fetched, validated, and processed data
+            new_data_payload = await fetch_all_processed_data()
+
+            new_checksum = compute_checksum(new_data_payload) # compute_checksum might need to handle the new structure
+
             if _cached_checksum is None or new_checksum != _cached_checksum:
-                _cached_data = new_cache
+                _cached_data = new_data_payload
                 _cached_checksum = new_checksum
-                logger.info("Cache updated (new checksum: %s)", new_checksum)
+                logger.info("Cache updated with new data structure (new checksum: %s)", new_checksum)
             else:
                 logger.info("No change detected (checksum remains %s).", _cached_checksum)
         except Exception as e:
-            logger.error("Error during cache refresh: %s", e)
+            logger.error("Error during cache refresh: %s", e, exc_info=True)
         await asyncio.sleep(REFRESH_INTERVAL)

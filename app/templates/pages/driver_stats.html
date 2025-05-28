@@ -6,34 +6,48 @@
   <h1>Driver Statistics</h1>
   <p>Overview of each driver's trips and sensor data counts.</p>
   
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Driver Email</th>
-        <th>Number of Trips Driven</th>
-        <th>Valid Sensor Data</th>
-        <th>Invalid Sensor Data</th>
-      </tr>
-    </thead>
-    <tbody id="driver-stats-table-body">
-      {% for row in stats.driver_stats %}
+  {% if data_unavailable %}
+    <div class="alert alert-warning" role="alert">
+      Driver statistics are currently unavailable or data is still being processed. Please check back shortly.
+    </div>
+  {% else %}
+    <table class="table table-striped">
+      <thead>
         <tr>
-          <td>{{ row.driverEmail }}</td>
-          <td>{{ row.numTrips }}</td>
-          <td>{{ row.validSensorDataCount }}</td>
-          <td>{{ row.invalidSensorDataCount }}</td>
+          <th>Driver Email / ID</th>
+          <th>Number of Trips Driven</th>
+          <th>Valid Sensor Data</th>
+          <th>Invalid Sensor Data</th>
         </tr>
-      {% endfor %}
-    </tbody>
-    <tfoot id="driver-stats-table-footer">
-  <tr>
-    <th>Total</th>
-    <th id="drivers-total-num-trips">{{ stats.total_num_trips }}</th>
-    <th id="drivers-total-valid-sensor-data">{{ stats.total_valid_sensor_data }}</th>
-    <th id="drivers-total-invalid-sensor-data">{{ stats.total_invalid_sensor_data }}</th>
-  </tr>
-</tfoot>
-  </table>
+      </thead>
+      <tbody>
+        {% if stats and stats.driver_list %}
+          {% for row in stats.driver_list %}  {# CORRECTED: Iterate over stats.driver_list #}
+            <tr>
+              <td>{{ row.driverEmail }}</td> {# This now contains potentially more descriptive emails/IDs #}
+              <td>{{ row.numTrips }}</td>
+              <td>{{ row.validSensorDataCount }}</td>
+              <td>{{ row.invalidSensorDataCount }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="4" class="text-center">No driver data to display.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+      <tfoot>
+        {% if stats %} {# Ensure stats object itself exists for totals #}
+          <tr>
+            <th>Total</th>
+            <th>{{ stats.total_num_trips }}</th>
+            <th>{{ stats.total_valid_sensor_data }}</th>
+            <th>{{ stats.total_invalid_sensor_data }}</th>
+          </tr>
+        {% endif %}
+      </tfoot>
+    </table>
+  {% endif %}
   
-  <a href="/" class="btn btn-secondary">Back to Dashboard</a>
+  <a href="/" class="btn btn-secondary mt-3">Back to Dashboard</a>
 {% endblock %}
