@@ -1,6 +1,5 @@
 # app/routes/__init__.py
 from fastapi import APIRouter
-
 from app.routes import dashboard
 from app.routes import driver_stats
 from app.routes import live
