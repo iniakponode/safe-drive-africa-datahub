@@ -31,7 +31,8 @@
     evtSource.onmessage = function(event) {
       console.log("Live update received:", event.data);
       try {
-        const data = JSON.parse(event.data);
+        const parsedData = JSON.parse(event.data);
+        const data = parsedData;
         // Update summary cards
         if (document.getElementById("totalDrivers"))
           document.getElementById("totalDrivers").textContent = data.aggregates.total_drivers;
@@ -62,26 +63,25 @@
         }
 
         // Update the driver stats table (from driver_stats.html)
-    const driverStatsTableBody = document.getElementById("driver-stats-table-body");
-    if (driverStatsTableBody && parsedData.driver_stats && parsedData.driver_stats.driver_stats) {
-      driverStatsTableBody.innerHTML = ""; // Clear existing rows
-      parsedData.driver_stats.driver_stats.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><span class="math-inline">\{row\.driverEmail\}</td\>
-          <td>{row.numTrips}</td>
-          <td>row.validSensorDataCount</td><td>{row.invalidSensorDataCount}</td>
-          `;
-          driverStatsTableBody.appendChild(tr);
+        const driverStatsTableBody = document.getElementById("driver-stats-table-body");
+        if (driverStatsTableBody && parsedData.driver_stats && parsedData.driver_stats.driver_list) {
+          driverStatsTableBody.innerHTML = "";
+          parsedData.driver_stats.driver_list.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${row.driverEmail}</td>
+              <td>${row.numTrips}</td>
+              <td>${row.validSensorDataCount}</td>
+              <td>${row.invalidSensorDataCount}</td>
+            `;
+            driverStatsTableBody.appendChild(tr);
           });
-
-                  // Update footer totals
-        if(document.getElementById("drivers-total-num-trips"))
-        document.getElementById("drivers-total-num-trips").textContent = parsedData.driver_stats.total_num_trips;
-        if(document.getElementById("drivers-total-valid-sensor-data"))
-        document.getElementById("drivers-total-valid-sensor-data").textContent = parsedData.driver_stats.total_valid_sensor_data;
-        if(document.getElementById("drivers-total-invalid-sensor-data"))
-        document.getElementById("drivers-total-invalid-sensor-data").textContent = parsedData.driver_stats.total_invalid_sensor_data;
+          if (document.getElementById("drivers-total-num-trips"))
+            document.getElementById("drivers-total-num-trips").textContent = parsedData.driver_stats.total_num_trips;
+          if (document.getElementById("drivers-total-valid-sensor-data"))
+            document.getElementById("drivers-total-valid-sensor-data").textContent = parsedData.driver_stats.total_valid_sensor_data;
+          if (document.getElementById("drivers-total-invalid-sensor-data"))
+            document.getElementById("drivers-total-invalid-sensor-data").textContent = parsedData.driver_stats.total_invalid_sensor_data;
         }
 
   } catch(e) {

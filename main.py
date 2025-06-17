@@ -33,3 +33,4 @@ if __name__ == "__main__":
     host = "0.0.0.0" if ENVIRONMENT == "production" else "127.0.0.1"
     port = int(os.environ.get("PORT", 8001))
     uvicorn.run("main:app", reload=(ENVIRONMENT == "development"), host=host, port=port)
+

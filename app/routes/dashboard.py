@@ -15,7 +15,7 @@ async def main_dashboard_page(request: Request):
     processed_data_payload = get_cached_data()
     data_unavailable_for_template = False
 
-    # Default structure for the old 'aggregates' object
+# Default structure for the old 'aggregates' object
     template_aggregates = {
         'total_drivers': 0,
         'total_trips': 0,
@@ -27,16 +27,8 @@ async def main_dashboard_page(request: Request):
     }
 
     if processed_data_payload is None:
-        logger.info("Main Dashboard: Cache is empty. Attempting to fetch data for this request.")
-        try:
-            processed_data_payload = await fetch_all_processed_data()
-            if processed_data_payload is None:
-                logger.warning("Main Dashboard: Initial data fetch/processing returned None.")
-                data_unavailable_for_template = True
-        except Exception as e:
-            logger.error(f"Main Dashboard: Critical error during initial data fetch on cache miss: {e}", exc_info=True)
-            processed_data_payload = None
-            data_unavailable_for_template = True
+        logger.warning("Main Dashboard: No cached data available.")
+        data_unavailable_for_template = True
 
     if processed_data_payload:
         summary_data = processed_data_payload.get("summary_totals", {})
@@ -62,8 +54,8 @@ async def main_dashboard_page(request: Request):
             logger.warning("Main Dashboard: Essential data ('summary_totals' or 'dashboard_trip_metrics') missing from payload.")
     else:
         if not data_unavailable_for_template:
-             logger.warning("Main Dashboard: No data payload available. Using default empty aggregates.")
-        data_unavailable_for_template = True # Ensure flag is true if payload is None
+            logger.warning("Main Dashboard: No data payload available. Using default empty aggregates.")
+        data_unavailable_for_template = True  # Ensure flag is true if payload is None
 
     response_headers = {
         "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
