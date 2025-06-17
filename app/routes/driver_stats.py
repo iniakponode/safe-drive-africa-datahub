@@ -4,8 +4,6 @@ from fastapi.templating import Jinja2Templates
 import logging
 
 from app.cache import get_cached_data
-# Import the new main fetching/processing function for the case where cache might be initially empty
-from app.services.data_service import fetch_all_processed_data # This is the refactored function
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -30,18 +28,10 @@ async def driver_statistics_page(request: Request):
     }
 
     if processed_data_payload is None:
-        logger.info("Driver Stats Page: Cache is empty. Attempting to fetch and process data for this request.")
-        # This behavior (fetching directly if cache is empty) makes the first request potentially slow.
-        # Alternative: Set data_unavailable_for_template = True and rely on background cache refresh.
-        try:
-            processed_data_payload = await fetch_all_processed_data()
-            if processed_data_payload is None: # If the fetch/process itself returned None
-                logger.warning("Driver Stats Page: Initial data fetch/processing returned None.")
-                data_unavailable_for_template = True
-        except Exception as e:
-            logger.error(f"Driver Stats Page: Critical error during initial data fetch on cache miss: {e}", exc_info=True)
-            processed_data_payload = None # Ensure it's None if fetch fails
-            data_unavailable_for_template = True
+        logger.info(
+            "Driver Stats Page: Cache miss. Serving default stats without blocking."
+        )
+        data_unavailable_for_template = True
 
     if processed_data_payload:
         # Extract the 'driver_focused_stats' part from the overall payload
