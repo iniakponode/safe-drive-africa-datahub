@@ -4,10 +4,8 @@ function hideLoadingOverlay() {
         overlay.classList.add('hidden');
     }
 }
-
 // store paginators globally so that tables updated dynamically can refresh
 window.tablePaginators = window.tablePaginators || {};
-
 function setupTablePagination(config) {
     const table = document.getElementById(config.tableId);
     const searchInput = document.getElementById(config.searchInputId);
@@ -64,7 +62,6 @@ function setupTablePagination(config) {
     searchInput.addEventListener('input', filterRows);
     prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; render(); }});
     nextBtn.addEventListener('click', () => { const totalPages = Math.ceil(filteredRows.length / rowsPerPage); if (currentPage < totalPages) { currentPage++; render(); }});
-
     function refresh() {
         rows = Array.from(table.querySelectorAll('tbody tr'));
         filterRows();
