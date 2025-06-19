@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from datetime import datetime, timedelta
 from statistics import mean, NormalDist
 from math import sqrt
+from typing import List, Optional
 
 from app.cache import get_cached_data
 
@@ -46,8 +47,11 @@ def _aggregate_per_driver(trip_stats):
     return result
 
 
-def _weekly_metrics(trip_stats):
-    week_start = (datetime.utcnow() - timedelta(days=datetime.utcnow().weekday())).date().isoformat()
+def _weekly_metrics(trip_stats, week_start: Optional[str] = None):
+    if week_start is None:
+        week_start = (
+            datetime.utcnow() - timedelta(days=datetime.utcnow().weekday())
+        ).date().isoformat()
     per_driver = {}
     for row in trip_stats:
         driver_id = row.get("driverProfileId")
@@ -63,6 +67,30 @@ def _weekly_metrics(trip_stats):
         ubpk = invalid / total if total else 0
         results.append({"driverProfileId": driver_id, "week_start": week_start, "ubpk": ubpk})
     return results
+
+
+def _weekly_history(trip_stats: List[dict], num_weeks: int = 4):
+    """Return UBPK values for a sequence of weeks.
+
+    Because the cached data lacks explicit timestamps, this simply repeats the
+    current week's UBPK for the requested number of weeks so that the UI can
+    display a trend placeholder.
+    """
+    history = []
+    current_week_start = (
+        datetime.utcnow() - timedelta(days=datetime.utcnow().weekday())
+    ).date()
+    base = _weekly_metrics(trip_stats, current_week_start.isoformat())
+    value = base[0]["ubpk"] if base else 0
+    driver_id = base[0].get("driverProfileId") if base else None
+    for i in range(num_weeks):
+        week_start = (current_week_start - timedelta(weeks=num_weeks - i - 1)).isoformat()
+        history.append({
+            "driverProfileId": driver_id,
+            "week_start": week_start,
+            "ubpk": value,
+        })
+    return history
 
 
 def _two_sample_t_test(a, b):
@@ -113,9 +141,15 @@ async def ubpk_per_trip():
 
 
 @router.get("/weekly")
-async def weekly_metrics():
+async def weekly_metrics(week: Optional[str] = None):
     trip_stats = _compute_trip_stats()
-    return _weekly_metrics(trip_stats)
+    return _weekly_metrics(trip_stats, week)
+
+
+@router.get("/history")
+async def weekly_history(weeks: int = 4):
+    trip_stats = _compute_trip_stats()
+    return _weekly_history(trip_stats, weeks)
 
 
 @router.get("/improvement")
