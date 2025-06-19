@@ -18,10 +18,12 @@ def _compute_trip_stats():
         invalid = row.get("invalidSensorDataCount", 0)
         driver_id = row.get("driverProfileId")
         trip_id = row.get("tripId")
+        start_time = row.get("startTime")
         ubpk = invalid / total if total else 0
         processed.append({
             "trip_id": trip_id,
             "driverProfileId": driver_id,
+            "startTime": start_time,
             "ubpk": ubpk,
             "invalid": invalid,
             "total": total,
@@ -48,12 +50,26 @@ def _aggregate_per_driver(trip_stats):
 
 
 def _weekly_metrics(trip_stats, week_start: Optional[str] = None):
+    """Aggregate UBPK per driver for trips starting within the given week."""
     if week_start is None:
-        week_start = (
-            datetime.utcnow() - timedelta(days=datetime.utcnow().weekday())
-        ).date().isoformat()
+        week_start_dt = datetime.utcnow() - timedelta(days=datetime.utcnow().weekday())
+    else:
+        try:
+            week_start_dt = datetime.fromisoformat(week_start)
+        except ValueError:
+            week_start_dt = datetime.utcnow() - timedelta(days=datetime.utcnow().weekday())
+    week_end_dt = week_start_dt + timedelta(days=7)
     per_driver = {}
     for row in trip_stats:
+        start_time_str = row.get("startTime")
+        if not start_time_str:
+            continue
+        try:
+            start_time = datetime.fromisoformat(start_time_str)
+        except ValueError:
+            continue
+        if not (week_start_dt <= start_time < week_end_dt):
+            continue
         driver_id = row.get("driverProfileId")
         if not driver_id:
             continue
@@ -65,29 +81,22 @@ def _weekly_metrics(trip_stats, week_start: Optional[str] = None):
         total = vals["total"]
         invalid = vals["invalid"]
         ubpk = invalid / total if total else 0
-        results.append({"driverProfileId": driver_id, "week_start": week_start, "ubpk": ubpk})
+        results.append({"driverProfileId": driver_id, "week_start": week_start_dt.date().isoformat(), "ubpk": ubpk})
     return results
 
 
 def _weekly_history(trip_stats: List[dict], num_weeks: int = 4):
-    """Return UBPK values for a sequence of weeks.
-
-    Because the cached data lacks explicit timestamps, this simply repeats the
-    current week's UBPK for the requested number of weeks so that the UI can
-    display a trend placeholder.
-    """
+    """Return UBPK per week for the specified number of weeks."""
     history = []
-    current_week_start = (
-        datetime.utcnow() - timedelta(days=datetime.utcnow().weekday())
-    ).date()
-    base = _weekly_metrics(trip_stats, current_week_start.isoformat())
-    value = base[0]["ubpk"] if base else 0
-    driver_id = base[0].get("driverProfileId") if base else None
+    base_week_start = datetime.utcnow() - timedelta(days=datetime.utcnow().weekday())
     for i in range(num_weeks):
-        week_start = (current_week_start - timedelta(weeks=num_weeks - i - 1)).isoformat()
+        week_start_dt = base_week_start - timedelta(weeks=num_weeks - i - 1)
+        week_metrics = _weekly_metrics(trip_stats, week_start_dt.date().isoformat())
+        value = week_metrics[0]["ubpk"] if week_metrics else 0
+        driver_id = week_metrics[0].get("driverProfileId") if week_metrics else None
         history.append({
             "driverProfileId": driver_id,
-            "week_start": week_start,
+            "week_start": week_start_dt.date().isoformat(),
             "ubpk": value,
         })
     return history
