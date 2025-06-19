@@ -14,3 +14,7 @@
 #loading-overlay.hidden {
     display: none;
 }
+
+.pagination {
+    margin-bottom: 0;
+}

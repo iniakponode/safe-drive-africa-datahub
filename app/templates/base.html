@@ -65,6 +65,9 @@
             `;
             tableBody.appendChild(tr);
           });
+          if (window.tablePaginators && window.tablePaginators.trip) {
+            window.tablePaginators.trip.refresh();
+          }
         }
 
         // Update the driver stats table (from driver_stats.html)
@@ -82,6 +85,10 @@
             `;
             driverStatsTableBody.appendChild(tr);
           });
+
+          if (window.tablePaginators && window.tablePaginators.driver) {
+            window.tablePaginators.driver.refresh();
+          }
 
           // Update footer totals
           if (document.getElementById("drivers-total-num-trips")) {
