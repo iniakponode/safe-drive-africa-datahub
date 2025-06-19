@@ -10,7 +10,12 @@
   <link rel="stylesheet" href="/static/css/navbar.css" />
   {% block head %}{% endblock %}
 </head>
-<body>
+  <body>
+  <div id="loading-overlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
   {% include "partials/header.html" %}
   
   <div class="container my-4">
@@ -60,6 +65,9 @@
             `;
             tableBody.appendChild(tr);
           });
+          if (window.tablePaginators && window.tablePaginators.trip) {
+            window.tablePaginators.trip.refresh();
+          }
         }
 
         // Update the driver stats table (from driver_stats.html)
@@ -77,6 +85,10 @@
             `;
             driverStatsTableBody.appendChild(tr);
           });
+
+          if (window.tablePaginators && window.tablePaginators.driver) {
+            window.tablePaginators.driver.refresh();
+          }
 
           // Update footer totals
           if (document.getElementById("drivers-total-num-trips")) {
