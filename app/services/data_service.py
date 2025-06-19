@@ -300,39 +300,43 @@ def process_and_aggregate_data(
     driver_summary_stats_map: Dict[str, Dict[str, Any]] = {}
 
     for driver_id, profile in drivers_map.items():
-        # Use email as primary key for display if available, otherwise use a placeholder with ID
         display_key = profile.email or f"Driver ID: {profile.driverProfileId} (Email Missing)"
-        driver_summary_stats_map[display_key] = {
+        driver_summary_stats_map[driver_id] = {
+            "driverEmail": display_key,
             "numTrips": 0,
             "validSensorDataCount": 0,
-            "invalidSensorDataCount": 0
-            # "driverProfileId": profile.driverProfileId # Optionally include for reference
+            "invalidSensorDataCount": 0,
         }
     
     # Aggregate trip data into the driver_summary_stats_map
     for trip_stat_row in driver_trip_sensor_stats_list:
-        # The driverEmail here is already determined (actual email, placeholder, or various "Unknown")
-        key = trip_stat_row["driverEmail"]
-        
+        key = trip_stat_row.get("driverProfileId")
+        if not key:
+            # skip if trip has no driver id
+            continue
         if key not in driver_summary_stats_map:
-            # This case handles trips assigned to "Unknown Driver (Trip Missing Driver ID)"
-            # or "Unknown Driver (Profile ID: X Not Found)" if these weren't pre-initialized
-            # (they wouldn't be if they don't correspond to a valid fetched driver profile).
-            logger.info(f"Creating new entry in driver_summary_stats_map for key from trip: {key}")
-            driver_summary_stats_map[key] = {"numTrips": 0, "validSensorDataCount": 0, "invalidSensorDataCount": 0}
-
+            logger.info(
+                f"Creating new entry in driver_summary_stats_map for key from trip: {key}"
+            )
+            driver_summary_stats_map[key] = {
+                "driverEmail": trip_stat_row.get("driverEmail", "Unknown"),
+                "numTrips": 0,
+                "validSensorDataCount": 0,
+                "invalidSensorDataCount": 0,
+            }
         driver_summary_stats_map[key]["numTrips"] += 1
         driver_summary_stats_map[key]["validSensorDataCount"] += trip_stat_row["validSensorDataCount"]
         driver_summary_stats_map[key]["invalidSensorDataCount"] += trip_stat_row["invalidSensorDataCount"]
 
     final_driver_stats_list = []
     total_aggregated_trips = 0
-    for display_email_or_id, stats in driver_summary_stats_map.items():
+    for driver_id, stats in driver_summary_stats_map.items():
         final_driver_stats_list.append({
-            "driverEmail": display_email_or_id, # This is the key used for display
+            "driverProfileId": driver_id,
+            "driverEmail": stats.get("driverEmail", "Unknown"),
             "numTrips": stats["numTrips"],
             "validSensorDataCount": stats["validSensorDataCount"],
-            "invalidSensorDataCount": stats["invalidSensorDataCount"]
+            "invalidSensorDataCount": stats["invalidSensorDataCount"],
         })
         total_aggregated_trips += stats["numTrips"]
         
