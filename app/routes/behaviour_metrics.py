@@ -97,6 +97,7 @@ def _weekly_history(trip_stats: List[dict], num_weeks: int = 4):
         history.append({
             "driverProfileId": driver_id,
             "week_start": week_start_dt.date().isoformat(),
+
             "ubpk": value,
         })
     return history
