@@ -50,4 +50,5 @@ The data analysis platform for the safe drive africa
 
 Tables on the dashboard and the driver statistics page support client-side pagination and search.
 Use the search boxes above each table to filter by Driver ID, Driver Email, or Trip ID.
+Search is case-insensitive and automatically refreshes when new live data is received.
 Previous/Next buttons and page numbers below each table allow navigating between pages of up to 10 rows at a time.

@@ -55,18 +55,22 @@ function setupTablePagination(config) {
     }
 
     function filterRows() {
-        const q = searchInput.value.toLowerCase();
-        filteredRows = rows.filter(r => r.textContent.toLowerCase().includes(q));
+        const q = searchInput.value.trim().toLowerCase();
+        filteredRows = rows.filter(r => r.innerText.toLowerCase().includes(q));
         currentPage = 1;
         render();
     }
 
     searchInput.addEventListener('input', filterRows);
+    searchInput.addEventListener('keyup', filterRows);
     prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; render(); }});
     nextBtn.addEventListener('click', () => { const totalPages = Math.ceil(filteredRows.length / rowsPerPage); if (currentPage < totalPages) { currentPage++; render(); }});
     function refresh() {
         rows = Array.from(table.querySelectorAll('tbody tr'));
-        filterRows();
+        const q = searchInput.value.trim().toLowerCase();
+        filteredRows = rows.filter(r => r.innerText.toLowerCase().includes(q));
+        currentPage = Math.min(currentPage, Math.ceil(filteredRows.length / rowsPerPage) || 1);
+        render();
     }
 
     render();
