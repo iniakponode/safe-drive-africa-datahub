@@ -14,17 +14,19 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Driver Email / ID</th>
+          <th>Driver ID</th>
+          <th>Driver Email</th>
           <th>Number of Trips Driven</th>
           <th>Valid Sensor Data</th>
           <th>Invalid Sensor Data</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="driver-stats-table-body">
         {% if stats and stats.driver_list %}
-          {% for row in stats.driver_list %}  {# CORRECTED: Iterate over stats.driver_list #}
+          {% for row in stats.driver_list %}
             <tr>
-              <td>{{ row.driverEmail }}</td> {# This now contains potentially more descriptive emails/IDs #}
+              <td><a href="/analysis/driver/{{ row.driverProfileId }}">{{ row.driverProfileId }}</a></td>
+              <td>{{ row.driverEmail }}</td>
               <td>{{ row.numTrips }}</td>
               <td>{{ row.validSensorDataCount }}</td>
               <td>{{ row.invalidSensorDataCount }}</td>
@@ -32,14 +34,14 @@
           {% endfor %}
         {% else %}
           <tr>
-            <td colspan="4" class="text-center">No driver data to display.</td>
+            <td colspan="5" class="text-center">No driver data to display.</td>
           </tr>
         {% endif %}
       </tbody>
       <tfoot>
         {% if stats %} {# Ensure stats object itself exists for totals #}
           <tr>
-            <th>Total</th>
+            <th colspan="2">Total</th>
             <th>{{ stats.total_num_trips }}</th>
             <th>{{ stats.total_valid_sensor_data }}</th>
             <th>{{ stats.total_invalid_sensor_data }}</th>

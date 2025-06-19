@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Trip {{ trip_id }} Analysis{% endblock %}
+
+{% block content %}
+  <h1>Trip {{ trip_id }} Behaviour Analysis</h1>
+  {% if not trip %}
+    <p>No data found for this trip.</p>
+  {% else %}
+    <p>Driver ID: <a href="/analysis/driver/{{ trip.driverProfileId }}">{{ trip.driverProfileId }}</a></p>
+    <p>UBPK: {{ trip.ubpk | round(4) }}</p>
+  {% endif %}
+  <a href="/" class="btn btn-secondary mt-3">Back to Dashboard</a>
+{% endblock %}
