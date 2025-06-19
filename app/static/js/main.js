@@ -4,18 +4,20 @@ function hideLoadingOverlay() {
         overlay.classList.add('hidden');
     }
 }
-
+// store paginators globally so that tables updated dynamically can refresh
+window.tablePaginators = window.tablePaginators || {};
 function setupTablePagination(config) {
     const table = document.getElementById(config.tableId);
     const searchInput = document.getElementById(config.searchInputId);
     const prevBtn = document.getElementById(config.prevBtnId);
     const nextBtn = document.getElementById(config.nextBtnId);
     const pageInfo = document.getElementById(config.pageInfoId);
+    const pageNumbers = document.getElementById(config.pageNumbersId);
     if (!table || !searchInput || !prevBtn || !nextBtn || !pageInfo) {
-        return;
+        return null;
     }
 
-    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    let rows = Array.from(table.querySelectorAll('tbody tr'));
     let filteredRows = rows.slice();
     let currentPage = 1;
     const rowsPerPage = config.rowsPerPage || 10;
@@ -30,6 +32,24 @@ function setupTablePagination(config) {
         pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage === totalPages;
+        if (pageNumbers) {
+            pageNumbers.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const li = document.createElement('li');
+                li.className = 'page-item' + (i === currentPage ? ' active' : '');
+                const a = document.createElement('a');
+                a.className = 'page-link';
+                a.href = '#';
+                a.textContent = i;
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentPage = i;
+                    render();
+                });
+                li.appendChild(a);
+                pageNumbers.appendChild(li);
+            }
+        }
     }
 
     function filterRows() {
@@ -42,26 +62,39 @@ function setupTablePagination(config) {
     searchInput.addEventListener('input', filterRows);
     prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; render(); }});
     nextBtn.addEventListener('click', () => { const totalPages = Math.ceil(filteredRows.length / rowsPerPage); if (currentPage < totalPages) { currentPage++; render(); }});
+    function refresh() {
+        rows = Array.from(table.querySelectorAll('tbody tr'));
+        filterRows();
+    }
 
     render();
+    return { refresh };
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     hideLoadingOverlay();
-    setupTablePagination({
+    window.tablePaginators.trip = setupTablePagination({
         tableId: 'trip-table',
         searchInputId: 'trip-search',
         prevBtnId: 'trip-prev',
         nextBtnId: 'trip-next',
         pageInfoId: 'trip-page-info',
+        pageNumbersId: 'trip-pages',
         rowsPerPage: 10
     });
-    setupTablePagination({
+    window.tablePaginators.driver = setupTablePagination({
         tableId: 'driver-stats-table',
         searchInputId: 'driver-search',
         prevBtnId: 'driver-prev',
         nextBtnId: 'driver-next',
         pageInfoId: 'driver-page-info',
+        pageNumbersId: 'driver-pages',
         rowsPerPage: 10
     });
 });
+
+// hide overlay if page already loaded
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    hideLoadingOverlay();
+}
+window.addEventListener('load', hideLoadingOverlay);
