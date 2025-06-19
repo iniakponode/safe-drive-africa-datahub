@@ -42,3 +42,9 @@ The data analysis platform for the safe drive africa
 
 4. **Access the Dashboard**
   Open your browser and navigate to the URL (e.g., http://localhost:8001) to view the dashboard.
+
+### Table Navigation
+
+Tables on the dashboard and the driver statistics page support client-side pagination and search.
+Use the search boxes above each table to filter by Driver ID, Driver Email, or Trip ID.
+Navigation buttons below the tables allow moving between result pages.
