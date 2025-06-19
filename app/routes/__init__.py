@@ -4,6 +4,7 @@ from app.routes import dashboard
 from app.routes import driver_stats
 from app.routes import live
 from app.routes import privacy
+
 from app.routes import behaviour_metrics
 from app.routes import analysis_pages
 

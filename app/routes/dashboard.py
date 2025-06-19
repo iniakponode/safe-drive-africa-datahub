@@ -4,7 +4,6 @@ from fastapi.templating import Jinja2Templates
 import logging
 
 from app.cache import get_cached_data
-from app.services.data_service import fetch_all_processed_data
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -27,16 +26,10 @@ async def main_dashboard_page(request: Request):
     }
 
     if processed_data_payload is None:
-        logger.info("Main Dashboard: Cache is empty. Attempting to fetch data for this request.")
-        try:
-            processed_data_payload = await fetch_all_processed_data()
-            if processed_data_payload is None:
-                logger.warning("Main Dashboard: Initial data fetch/processing returned None.")
-                data_unavailable_for_template = True
-        except Exception as e:
-            logger.error(f"Main Dashboard: Critical error during initial data fetch on cache miss: {e}", exc_info=True)
-            processed_data_payload = None
-            data_unavailable_for_template = True
+        logger.info(
+            "Main Dashboard: Cache miss. Serving page with default aggregates without blocking."
+        )
+        data_unavailable_for_template = True
 
     if processed_data_payload:
         summary_data = processed_data_payload.get("summary_totals", {})
