@@ -16,6 +16,7 @@ function setupTablePagination(config) {
     const pageInfo = document.getElementById(config.pageInfoId);
     const pageNumbers = document.getElementById(config.pageNumbersId);
     if (!table || !searchInput || !prevBtn || !nextBtn || !pageInfo) {
+        console.warn('Pagination init skipped for', config.tableId);
         return null;
     }
 
@@ -23,6 +24,26 @@ function setupTablePagination(config) {
     let filteredRows = rows.slice();
     let currentPage = 1;
     const rowsPerPage = config.rowsPerPage || 10;
+
+    function renderPageNumbers(totalPages) {
+        if (!pageNumbers) return;
+        pageNumbers.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement('li');
+            li.className = 'page-item' + (i === currentPage ? ' active' : '');
+            const a = document.createElement('a');
+            a.className = 'page-link';
+            a.href = '#';
+            a.textContent = i;
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage = i;
+                render();
+            });
+            li.appendChild(a);
+            pageNumbers.appendChild(li);
+        }
+    }
 
     function render() {
         const totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
@@ -34,24 +55,7 @@ function setupTablePagination(config) {
         pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage === totalPages;
-        if (pageNumbers) {
-            pageNumbers.innerHTML = '';
-            for (let i = 1; i <= totalPages; i++) {
-                const li = document.createElement('li');
-                li.className = 'page-item' + (i === currentPage ? ' active' : '');
-                const a = document.createElement('a');
-                a.className = 'page-link';
-                a.href = '#';
-                a.textContent = i;
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    currentPage = i;
-                    render();
-                });
-                li.appendChild(a);
-                pageNumbers.appendChild(li);
-            }
-        }
+        renderPageNumbers(totalPages);
     }
 
     function filterRows() {

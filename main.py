@@ -1,7 +1,10 @@
 # app/main.py
 import asyncio
 import os
-import dotenv
+try:
+    import dotenv
+except ImportError:  # pragma: no cover - optional dependency
+    dotenv = None
 from fastapi import FastAPI
 import uvicorn
 from fastapi.staticfiles import StaticFiles
@@ -10,7 +13,7 @@ from app.cache import refresh_cache_periodically
 
 # Load environment variables (for local development)
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
-if ENVIRONMENT == "development":
+if ENVIRONMENT == "development" and dotenv:
     dotenv.load_dotenv()
 
 app = FastAPI(
