@@ -52,7 +52,11 @@
   
   <!-- Table: Sensor Data Per Trip (Per Driver) -->
   <h2>Sensor Data Per Trip (Per Driver)</h2>
-  <table class="table table-striped">
+  <div class="mb-2">
+    <input id="trip-search" class="form-control" placeholder="Search records" />
+    <small class="form-text text-muted">Search by Driver ID, Driver Email or Trip ID.</small>
+  </div>
+  <table id="trip-table" class="table table-striped">
     <thead>
       <tr>
         <th>Driver ID</th>
@@ -76,4 +80,9 @@
       {% endfor %}
     </tbody>
   </table>
+  <div class="d-flex justify-content-between align-items-center">
+    <button id="trip-prev" class="btn btn-sm btn-secondary">Previous</button>
+    <span id="trip-page-info" class="mx-2"></span>
+    <button id="trip-next" class="btn btn-sm btn-secondary">Next</button>
+  </div>
 {% endblock %}
