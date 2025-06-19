@@ -27,6 +27,11 @@
     </table>
 
     <h4>Weekly Metrics</h4>
+    <form method="get" class="form-inline mb-2">
+      <label for="week" class="mr-2">Select week:</label>
+      <input type="week" id="week" name="week" class="form-control mr-2" value="{{ week }}">
+      <button type="submit" class="btn btn-primary btn-sm">View</button>
+    </form>
     <table class="table table-striped">
       <thead>
         <tr><th>Week Start</th><th>UBPK</th></tr>
@@ -38,5 +43,6 @@
       </tbody>
     </table>
   {% endif %}
+  <a href="/analysis/driver/{{ driver_id }}/history" class="btn btn-info mt-3 mr-2">View Weekly Trend</a>
   <a href="/drivers" class="btn btn-secondary mt-3">Back to Driver Stats</a>
 {% endblock %}
