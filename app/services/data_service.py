@@ -275,9 +275,10 @@ def process_and_aggregate_data(
             # For now, they are included to show the trip happened but couldn't be linked well.
 
         trip_sensor_info = sensor_stats_by_trip.get(trip.trip_id, {"total": 0, "valid": 0, "invalid": 0})
-        
+
         driver_trip_sensor_stats_list.append({
             "driverEmail": driver_email_display, # This provides more context than just "Unknown Driver"
+            "driverProfileId": trip.driverProfileId,
             "tripId": trip.trip_id,
             "totalSensorDataCount": trip_sensor_info["total"],
             "invalidSensorDataCount": trip_sensor_info["invalid"],
