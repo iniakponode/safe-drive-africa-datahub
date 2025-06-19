@@ -51,6 +51,7 @@ class TripModel(BaseApiModel):
     # We'll handle potential aliasing during raw data parsing
     trip_id: str
     driverProfileId: Optional[str] = None
+    startTime: Optional[str] = None
 
     @field_validator('trip_id', 'driverProfileId', mode='before')
     @classmethod
@@ -65,6 +66,8 @@ class TripModel(BaseApiModel):
                 return None
             return stripped_v # Return the stripped, non-empty string
         return v # Return other types as is (Pydantic will type check later)
+
+    _normalize_start_time = field_validator('startTime', mode='before')(BaseApiModel.strip_empty_str)
 
 class SensorValueItemModel(BaseModel):
     # Define if sensor values have a specific structure, otherwise use List[float]
@@ -280,6 +283,7 @@ def process_and_aggregate_data(
             "driverEmail": driver_email_display, # This provides more context than just "Unknown Driver"
             "driverProfileId": trip.driverProfileId,
             "tripId": trip.trip_id,
+            "startTime": getattr(trip, "startTime", None),
             "totalSensorDataCount": trip_sensor_info["total"],
             "invalidSensorDataCount": trip_sensor_info["invalid"],
             "validSensorDataCount": trip_sensor_info["valid"]
