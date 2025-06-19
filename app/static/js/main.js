@@ -4,6 +4,8 @@ function hideLoadingOverlay() {
         overlay.classList.add('hidden');
     }
 }
+// Fallback in case DOM events fail
+setTimeout(hideLoadingOverlay, 5000);
 // store paginators globally so that tables updated dynamically can refresh
 window.tablePaginators = window.tablePaginators || {};
 function setupTablePagination(config) {
