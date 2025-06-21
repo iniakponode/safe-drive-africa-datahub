@@ -15,11 +15,8 @@ The data analysis platform for the safe drive africa
   Visualize driving data through charts, graphs, and heatmaps to quickly identify trends and patterns.
 
 
-- **Historical Data Comparison**
+- **Historical Data Comparison**  
   Compare current driving data with historical records to measure improvement or identify recurring issues.
-
-- **Loading Feedback**
-  A spinner overlay briefly appears while pages prepare data so you know the application is working.
 
 ## Getting Started
 
@@ -45,10 +42,3 @@ The data analysis platform for the safe drive africa
 
 4. **Access the Dashboard**
   Open your browser and navigate to the URL (e.g., http://localhost:8001) to view the dashboard.
-
-### Table Navigation
-
-Tables on the dashboard and the driver statistics page support client-side pagination and search.
-Use the search boxes above each table to filter by Driver ID, Driver Email, or Trip ID.
-Search is case-insensitive and automatically refreshes when new live data is received.
-Previous/Next buttons and page numbers below each table allow navigating between pages of up to 10 rows at a time.

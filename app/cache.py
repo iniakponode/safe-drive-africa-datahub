@@ -8,7 +8,7 @@ from app.services.data_service import fetch_all_processed_data
 
 logger = logging.getLogger(__name__)
 
-REFRESH_INTERVAL = 30  # seconds
+REFRESH_INTERVAL = 10  # seconds
 
 _cached_data = None  
 _cached_checksum = None

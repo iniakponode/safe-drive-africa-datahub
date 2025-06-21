@@ -11,11 +11,7 @@
       Driver statistics are currently unavailable or data is still being processed. Please check back shortly.
     </div>
   {% else %}
-    <div class="mb-2">
-      <input id="driver-search" class="form-control" placeholder="Search records" />
-      <small class="form-text text-muted">Search by Driver ID or Driver Email.</small>
-    </div>
-    <table id="driver-stats-table" class="table table-striped">
+    <table class="table table-striped">
       <thead>
         <tr>
           <th>Driver ID</th>
@@ -53,16 +49,6 @@
         {% endif %}
       </tfoot>
     </table>
-    <div class="d-flex justify-content-between align-items-center">
-      <button id="driver-prev" class="btn btn-sm btn-secondary">Previous</button>
-      <nav aria-label="Driver pages">
-        <ul id="driver-pages" class="pagination mb-0"></ul>
-      </nav>
-      <button id="driver-next" class="btn btn-sm btn-secondary">Next</button>
-    </div>
-    <div class="text-center">
-      <span id="driver-page-info"></span>
-    </div>
   {% endif %}
   
   <a href="/" class="btn btn-secondary mt-3">Back to Dashboard</a>
