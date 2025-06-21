@@ -3,9 +3,10 @@ import asyncio
 import httpx
 import json
 import logging
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, ValidationInfo, field_validator, ValidationError
+from pydantic import BaseModel, ValidationInfo, field_validator, ValidationError, Field
 
 # --- Configuration ---
 logging.basicConfig(level=logging.INFO) # Adjust level as needed
@@ -47,11 +48,11 @@ class DriverProfileModel(BaseApiModel):
         return v # Return non-string values as is (Pydantic will type-check them)
 
 class TripModel(BaseApiModel):
-    # Assuming 'id' or 'trip_id' is the trip's own identifier
-    # We'll handle potential aliasing during raw data parsing
+    """Validated trip model."""
+
     trip_id: str
     driverProfileId: Optional[str] = None
-    startTime: Optional[str] = None
+    start_time: Optional[str] = Field(None, alias="startTime")
 
     @field_validator('trip_id', 'driverProfileId', mode='before')
     @classmethod
@@ -67,7 +68,7 @@ class TripModel(BaseApiModel):
             return stripped_v # Return the stripped, non-empty string
         return v # Return other types as is (Pydantic will type check later)
 
-    _normalize_start_time = field_validator('startTime', mode='before')(BaseApiModel.strip_empty_str)
+    _normalize_start_time = field_validator('start_time', mode='before')(BaseApiModel.strip_empty_str)
 
 class SensorValueItemModel(BaseModel):
     # Define if sensor values have a specific structure, otherwise use List[float]
@@ -279,11 +280,22 @@ def process_and_aggregate_data(
 
         trip_sensor_info = sensor_stats_by_trip.get(trip.trip_id, {"total": 0, "valid": 0, "invalid": 0})
 
+        start_time = getattr(trip, "start_time", None)
+        week_str = None
+        if start_time:
+            try:
+                dt = datetime.fromisoformat(start_time)
+                iy, iw, _ = dt.isocalendar()
+                week_str = f"{iy}-W{iw:02d}"
+            except Exception:
+                week_str = None
+
         driver_trip_sensor_stats_list.append({
-            "driverEmail": driver_email_display, # This provides more context than just "Unknown Driver"
+            "driverEmail": driver_email_display,
             "driverProfileId": trip.driverProfileId,
             "tripId": trip.trip_id,
-            "startTime": getattr(trip, "startTime", None),
+            "start_time": start_time,
+            "week": week_str,
             "totalSensorDataCount": trip_sensor_info["total"],
             "invalidSensorDataCount": trip_sensor_info["invalid"],
             "validSensorDataCount": trip_sensor_info["valid"]

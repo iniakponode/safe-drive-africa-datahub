@@ -9,6 +9,8 @@ from fastapi import FastAPI
 import uvicorn
 from fastapi.staticfiles import StaticFiles
 from app.routes import router
+from app.routers.ubpk_metrics import router as ubpk_router
+from app.routers.analysis_pages import router as analysis_router
 from app.cache import refresh_cache_periodically
 
 # Load environment variables (for local development)
@@ -25,6 +27,8 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # Include all routes
 app.include_router(router)
+app.include_router(ubpk_router, prefix="/metrics/behavior", tags=["UBPK"])
+app.include_router(analysis_router, prefix="/analysis", tags=["Analysis"])
 
 @app.on_event("startup")
 async def startup_event():

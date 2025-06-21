@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Driver {{ driver_id }} Analysis{% endblock %}
+{% block content %}
+<h1>Driver {{ driver_id }} Analysis</h1>
+<form method="get" action="/analysis/driver/{{ driver_id }}/trend">
+  <div class="form-group">
+    <label for="week">Week</label>
+    <select class="form-control" id="week" name="week">
+      {% for w in weeks %}
+        <option value="{{ w }}">{{ w }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Show Trend</button>
+  <a href="/analysis/driver/{{ driver_id }}/history" class="btn btn-secondary">History</a>
+</form>
+{% endblock %}

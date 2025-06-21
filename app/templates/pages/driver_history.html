@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Driver {{ driver_id }} History{% endblock %}
+{% block content %}
+<h1>UBPK History for Driver {{ driver_id }}</h1>
+<table class="table table-striped">
+  <thead><tr><th>Week</th><th>UBPK</th></tr></thead>
+  <tbody>
+  {% for row in history %}
+    <tr><td>{{ row.week }}</td><td>{{ '%.3f'|format(row.ubpk) }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+<a href="/analysis/driver/{{ driver_id }}" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}
