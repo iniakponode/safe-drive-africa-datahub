@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Driver {{ driver_id }} Trend{% endblock %}
+{% block content %}
+<h1>UBPK Trend for Driver {{ driver_id }}</h1>
+<p>Week: {{ week }}</p>
+{% if ubpk is not none %}
+<p>UBPK: {{ '%.3f'|format(ubpk) }}</p>
+{% else %}
+<p>No data for this week.</p>
+{% endif %}
+<a href="/analysis/driver/{{ driver_id }}" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}
