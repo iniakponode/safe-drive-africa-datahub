@@ -72,3 +72,24 @@ def test_improvement_analysis():
     assert resp.status_code == 200
     body = resp.json()
     assert "p_value" in body and "mean_difference" in body
+
+
+def test_driver_week_metrics():
+    with patch("app.cache.get_cached_data", return_value=sample_data):
+        resp = client.get("/metrics/behavior/driver/d1?week=2024-W23")
+    assert resp.status_code == 200
+    assert resp.json()["ubpk"] == 0.2
+
+
+def test_driver_history_metrics():
+    with patch("app.cache.get_cached_data", return_value=sample_data):
+        resp = client.get("/metrics/behavior/driver/d1/history")
+    assert resp.status_code == 200
+    assert isinstance(resp.json(), list)
+
+
+def test_single_trip_metrics():
+    with patch("app.cache.get_cached_data", return_value=sample_data):
+        resp = client.get("/metrics/behavior/trip/t1")
+    assert resp.status_code == 200
+    assert resp.json()["tripId"] == "t1"

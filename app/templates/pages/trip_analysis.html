@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Trip {{ trip_id }} Analysis{% endblock %}
+{% block content %}
+<h1>Trip {{ trip_id }} Analysis</h1>
+{% if metrics %}
+<ul>
+  <li>Driver: <a href="/analysis/driver/{{ metrics.driverProfileId }}">{{ metrics.driverProfileId }}</a></li>
+  <li>Start Time: {{ metrics.start_time }}</li>
+  <li>Total Sensor Records: {{ metrics.totalSensorDataCount }}</li>
+  <li>Invalid Sensor Records: {{ metrics.invalidSensorDataCount }}</li>
+  <li>UBPK: {{ '%.3f'|format(metrics.ubpk) if metrics.ubpk is not none else 'N/A' }}</li>
+</ul>
+{% else %}
+<p>No data found for this trip.</p>
+{% endif %}
+<a href="/" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}
