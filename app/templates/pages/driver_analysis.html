@@ -20,52 +20,6 @@
 {% block scripts %}
 {{ super() }}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const select = document.getElementById('week-select');
-    const loading = document.getElementById('loading');
-    let chart = null;
-    function renderChart(history) {
-      const ctx = document.getElementById('trend-chart').getContext('2d');
-      const labels = history.map(h => h.week);
-      const data = history.map(h => h.ubpk);
-      const colors = history.map((h,i)=> i>=history.length-2 ? 'rgba(255,99,132,0.6)' : 'rgba(54,162,235,0.6)');
-      if(chart){ chart.destroy(); }
-      chart = new Chart(ctx, {
-        type: 'bar',
-        data: {labels, datasets:[{label:'UBPK', data, backgroundColor:colors}]},
-        options: {scales:{y:{beginAtZero:true}}}
-      });
-    }
-    function loadHistory(){
-      loading.style.display='block';
-      fetch('/metrics/behavior/driver/{{ driver_id }}/history')
-        .then(r=>r.json())
-        .then(hist=>{
-          select.innerHTML='';
-          hist.forEach(h=>{
-            const opt=document.createElement('option');
-            opt.value=h.week; opt.textContent=h.week; select.appendChild(opt);
-          });
-          if(hist.length){ select.value=hist[hist.length-1].week; }
-          renderChart(hist);
-          loading.style.display='none';
-        })
-        .catch(()=>{loading.style.display='none';});
-    }
-    function updateTrend(week){
-      loading.style.display='block';
-      fetch(`/analysis/driver/{{ driver_id }}/trend?week=${week}`,{headers:{'accept':'application/json'}})
-        .then(r=>r.json())
-        .then(d=>{
-          renderChart(d.history);
-          if(d.p_value!==undefined){document.getElementById('p-value').textContent=d.p_value.toFixed(3);} else {document.getElementById('p-value').textContent='';}
-          loading.style.display='none';
-        })
-        .catch(()=>{loading.style.display='none';});
-    }
-    select.addEventListener('change', e=> updateTrend(e.target.value));
-    loadHistory();
-  });
-</script>
+<script src="/static/js/driver_analysis.js"></script>
+<script>const driverId = "{{ driver_id }}";</script>
 {% endblock %}
