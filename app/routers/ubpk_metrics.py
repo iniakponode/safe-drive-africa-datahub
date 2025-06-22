@@ -151,3 +151,78 @@ def placeholder_history(driver_id: str, weeks: int = 8) -> List[Dict]:
         })
     history.reverse()
     return history
+
+
+def _driver_history(driver_id: str) -> List[Dict]:
+    """Return UBPK history for a driver across all weeks."""
+    payload = get_cached_data()
+    if not payload:
+        return placeholder_history(driver_id)
+
+    rows = payload.get("dashboard_trip_metrics", [])
+    history: Dict[str, List[float]] = {}
+    for row in rows:
+        if row.get("driverProfileId") != driver_id:
+            continue
+        start = row.get("start_time")
+        week_tuple = _week_from_date(start) if start else None
+        if not week_tuple:
+            continue
+        wk = _week_string(*week_tuple)
+        ubpk = _compute_trip_ubpk(row)
+        if ubpk is None:
+            continue
+        history.setdefault(wk, []).append(ubpk)
+
+    if not history:
+        return placeholder_history(driver_id)
+
+    return [
+        {"week": wk, "ubpk": sum(vals) / len(vals)} for wk, vals in sorted(history.items())
+    ]
+
+
+@router.get("/driver/{driver_id}")
+async def driver_week_metrics(driver_id: str, week: Optional[str] = Query("current")) -> Dict:
+    """UBPK metrics for a driver for the specified week."""
+    today = date.today()
+    if week in (None, "current"):
+        year, wk = today.isocalendar()[:2]
+    else:
+        year, wk = _parse_week(week)
+
+    driver_map = _weekly_driver_map(year, wk)
+    vals = driver_map.get(driver_id)
+    if not vals:
+        raise HTTPException(404, "No trip data for this driver/week")
+
+    return {
+        "driverProfileId": driver_id,
+        "week": _week_string(year, wk),
+        "ubpk": sum(vals) / len(vals),
+        "numTrips": len(vals),
+    }
+
+
+@router.get("/driver/{driver_id}/history")
+async def driver_history_metrics(driver_id: str) -> List[Dict]:
+    """Return UBPK history for the given driver."""
+    return _driver_history(driver_id)
+
+
+@router.get("/trip/{trip_id}")
+async def trip_metrics(trip_id: str) -> Dict:
+    """Return UBPK metrics for a specific trip."""
+    rows = _gather_trip_rows()
+    for row in rows:
+        if row.get("tripId") == trip_id:
+            ubpk = _compute_trip_ubpk(row)
+            return {
+                "tripId": row.get("tripId"),
+                "driverProfileId": row.get("driverProfileId"),
+                "start_time": row.get("start_time"),
+                "invalidSensorDataCount": row.get("invalidSensorDataCount", 0),
+                "totalSensorDataCount": row.get("totalSensorDataCount", 0),
+                "ubpk": ubpk,
+            }
+    raise HTTPException(404, "Trip not found")

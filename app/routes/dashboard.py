@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 import logging
+from datetime import date
 
 from app.cache import get_cached_data
 
@@ -47,7 +48,22 @@ async def main_dashboard_page(request: Request):
         template_aggregates['orphan_sensor_data_count'] = summary_data.get('orphan_sensor_data_count', 0)
         
         # The main table data for the dashboard
-        template_aggregates['driver_trip_sensor_stats'] = dashboard_metrics
+        enriched_rows = []
+        for row in dashboard_metrics:
+            week = row.get('week')
+            if not week:
+                st = row.get('start_time')
+                if st:
+                    try:
+                        y, w, _ = date.fromisoformat(st).isocalendar()
+                        week = f"{y}-W{w:02d}"
+                    except Exception:
+                        week = ""
+            enriched = dict(row)
+            enriched['week'] = week
+            enriched_rows.append(enriched)
+
+        template_aggregates['driver_trip_sensor_stats'] = enriched_rows
         
         # Check if essential parts were still missing, to set the flag if needed
         if not summary_data or not dashboard_metrics:
