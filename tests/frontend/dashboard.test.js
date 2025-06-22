@@ -22,8 +22,8 @@ test('changing week selector calls API',async()=>{
 });
 
 test('table updates from response',async()=>{
-  fetch.mockResolvedValueOnce({ok:true,json:async()=>[{tripId:'t1',driverId:'d1',week:'2025-W01',totalUnsafeCount:1,distanceKm:10,ubpk:0.1}]});
+  fetch.mockResolvedValueOnce({ok:true,json:async()=>[{tripId:'t1',driverProfileId:'d1',week:'2025-W01',totalUnsafeCount:1,distanceKm:10,ubpk:0.1}]});
   await import('../../app/static/js/dashboard.js');
-  const row=document.querySelector('#trips-tbody tr');
+  const row=document.querySelector('#trip-table-body tr');
   expect(row.querySelector('td').textContent).toBe('t1');
 });
