@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+function initWeekSelector(){
   const select = document.getElementById('week-selector');
   if (!select) return;
   const now = new Date();
@@ -19,4 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
   select.innerHTML=weeks.map(w=>`<option value="${w}">${w}</option>`).join('');
   select.value=isoWeekString(now);
   select.dispatchEvent(new Event('change'));
-});
+}
+
+if (document.readyState !== 'loading') {
+  initWeekSelector();
+} else {
+  document.addEventListener('DOMContentLoaded', initWeekSelector);
+}
