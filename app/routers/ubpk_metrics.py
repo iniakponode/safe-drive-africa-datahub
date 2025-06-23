@@ -92,6 +92,7 @@ async def per_trip_metrics_by_week(
         # ensure driverId key for front-end table
         data["driverId"] = data.get("driverProfileId")
         metrics.append(data)
+
     return metrics
 
 
