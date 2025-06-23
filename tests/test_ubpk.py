@@ -93,3 +93,29 @@ def test_single_trip_metrics():
         resp = client.get("/metrics/behavior/trip/t1")
     assert resp.status_code == 200
     assert resp.json()["tripId"] == "t1"
+
+
+def test_trips_endpoint_uses_backend():
+    async def fake_fetch(trip_id: str):
+        return {
+            "tripId": trip_id,
+            "driverProfileId": "d1",
+            "week": "2024-W23",
+            "weekStart": "2024-06-03",
+            "weekEnd": "2024-06-10",
+            "totalUnsafeCount": 99,
+            "distanceKm": 12.3,
+            "ubpk": 1.23,
+        }
+
+    with patch("app.cache.get_cached_data", return_value=sample_data), patch(
+        "app.services.data_service.fetch_trip_behavior_metrics", side_effect=fake_fetch
+    ) as mocked:
+        resp = client.get("/metrics/behavior/trips?week=2024-W23")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body[0]["tripId"] == "t1"
+    assert body[0]["driverId"] == "d1"
+    assert body[0]["ubpk"] == 1.23
+    # called for each trip in selected week (t1 and t3)
+    assert mocked.call_count == 2

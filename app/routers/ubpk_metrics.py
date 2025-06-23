@@ -4,6 +4,8 @@ from datetime import datetime, date, timedelta
 from typing import Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException, Query
+import httpx
+from app.services.data_service import fetch_trip_behavior_metrics
 
 from app.cache import get_cached_data
 
@@ -61,6 +63,35 @@ async def per_trip_metrics() -> List[Dict]:
             "totalSensorDataCount": row.get("totalSensorDataCount", 0),
             "ubpk": ubpk,
         })
+    return metrics
+
+
+@router.get("/trips")
+async def per_trip_metrics_by_week(
+    week: Optional[str] = Query(None),
+) -> List[Dict]:
+    """Return UBPK metrics for each trip, optionally filtered by week."""
+    rows = _gather_trip_rows()
+    target_week: Optional[tuple[int, int]] = None
+    if week:
+        try:
+            target_week = _parse_week(week)
+        except ValueError:
+            raise HTTPException(400, "Invalid week format")
+
+    metrics: List[Dict] = []
+    for row in rows:
+        st = row.get("start_time")
+        wk = _week_from_date(st) if st else None
+        if target_week and wk != target_week:
+            continue
+        try:
+            data = await fetch_trip_behavior_metrics(row.get("tripId"))
+        except httpx.HTTPError:
+            continue
+        # ensure driverId key for front-end table
+        data["driverId"] = data.get("driverProfileId")
+        metrics.append(data)
     return metrics
 
 
@@ -226,3 +257,27 @@ async def trip_metrics(trip_id: str) -> Dict:
                 "ubpk": ubpk,
             }
     raise HTTPException(404, "Trip not found")
+
+
+@router.get("/v2/trip/{trip_id}")
+async def trip_metrics_backend(trip_id: str) -> Dict:
+    """Fetch trip metrics directly from the backend service."""
+    try:
+        return await fetch_trip_behavior_metrics(trip_id)
+    except httpx.HTTPStatusError as exc:
+        raise HTTPException(exc.response.status_code, "Upstream error") from exc
+    except httpx.RequestError as exc:  # pragma: no cover - network issue
+        raise HTTPException(502, "Upstream request failed") from exc
+
+
+@router.get("/trip/{trip_id}/ubpk")
+async def trip_metrics_with_week(trip_id: str) -> Dict:
+    """Return UBPK metrics for a specific trip with week info."""
+    data = await trip_metrics_backend(trip_id)
+    start = data.get("start_time")
+    week_tuple = _week_from_date(start) if start else None
+    if week_tuple:
+        data["week"] = _week_string(*week_tuple)
+        data["weekStart"] = date.fromisocalendar(*week_tuple, 1).isoformat()
+        data["weekEnd"] = date.fromisocalendar(*week_tuple, 7).isoformat()
+    return data
