@@ -4,8 +4,6 @@
 
 {% block content %}
   <h1 class="mb-4">Experiment Data Overview</h1>
-  <label for="week-selector">Week</label>
-  <select id="week-selector" class="form-select form-select-sm"></select>
   
   
   <!-- Summary Cards with element IDs for live updates -->
@@ -65,13 +63,11 @@
         <th>UBPK</th>
       </tr>
     </thead>
-    <tbody id="trip-table-body">
-      <tr><td colspan="6">No data for this week</td></tr>
-    </tbody>
+    <tbody id="trips-tbody"></tbody>
   </table>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
-<script src="{{ url_for('static', path='js/dashboard.js') }}"></script>
+<script src="/static/js/dashboard.js"></script>
 {% endblock %}
