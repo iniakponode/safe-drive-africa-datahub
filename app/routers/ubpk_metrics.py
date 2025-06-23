@@ -85,17 +85,13 @@ async def per_trip_metrics_by_week(
         wk = _week_from_date(st) if st else None
         if target_week and wk != target_week:
             continue
-        ubpk = _compute_trip_ubpk(row)
-        metrics.append(
-            {
-                "tripId": row.get("tripId"),
-                "driverId": row.get("driverProfileId"),
-                "week": _week_string(*wk) if wk else None,
-                "totalUnsafeCount": row.get("totalUnsafeCount"),
-                "distanceKm": row.get("distanceKm"),
-                "ubpk": ubpk,
-            }
-        )
+        try:
+            data = await fetch_trip_behavior_metrics(row.get("tripId"))
+        except httpx.HTTPError:
+            continue
+        # ensure driverId key for front-end table
+        data["driverId"] = data.get("driverProfileId")
+        metrics.append(data)
     return metrics
 
 
