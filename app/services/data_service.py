@@ -3,6 +3,7 @@ import asyncio
 import httpx
 import json
 import logging
+import os
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
@@ -372,11 +373,26 @@ def process_and_aggregate_data(
             "global_valid_sensor_data_count": valid_sensor_data_global,
             "total_aggregated_trips_in_driver_stats": total_aggregated_trips,
         },
-        "dashboard_trip_metrics": driver_trip_sensor_stats_list, # Formerly "driver_trip_sensor_stats"
-        "driver_focused_stats": { # Formerly just "driver_stats" which was a list. Now a dict.
-            "driver_list": final_driver_stats_list, # The list of drivers for the table
-            "total_num_trips": sum(item['numTrips'] for item in final_driver_stats_list), # Recalculate for this list
+        "dashboard_trip_metrics": driver_trip_sensor_stats_list,  # Formerly "driver_trip_sensor_stats"
+        "driver_focused_stats": {  # Formerly just "driver_stats" which was a list. Now a dict.
+            "driver_list": final_driver_stats_list,  # The list of drivers for the table
+            "total_num_trips": sum(item['numTrips'] for item in final_driver_stats_list),  # Recalculate for this list
             "total_valid_sensor_data": sum(item['validSensorDataCount'] for item in final_driver_stats_list),
             "total_invalid_sensor_data": sum(item['invalidSensorDataCount'] for item in final_driver_stats_list),
-        }
+        },
     }
+
+
+BEHAVIOR_METRICS_URL = os.getenv(
+    "BEHAVIOR_METRICS_URL",
+    "https://api.safedriveafrica.com/api/metrics/behavior/v2/trip/",
+)
+
+
+async def fetch_trip_behavior_metrics(trip_id: str) -> Dict[str, Any]:
+    """Fetch already computed behavior metrics for a trip from the backend."""
+    url = f"{BEHAVIOR_METRICS_URL}{trip_id}"
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        resp = await client.get(url)
+        resp.raise_for_status()
+        return resp.json()
