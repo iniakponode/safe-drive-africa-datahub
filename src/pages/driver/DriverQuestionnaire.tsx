@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AppShell } from '../../components/AppShell'
 import { useAuth } from '../../auth/AuthContext'
 import {
@@ -40,27 +40,27 @@ export function DriverQuestionnaire() {
 
   useEffect(() => {
     if (profile?.driverProfileId) {
-      setForm((prev) => ({ ...prev, driverProfileId: profile.driverProfileId }))
+      setForm((prev) => ({ ...prev, driverProfileId: profile.driverProfileId || '' }))
     }
   }, [profile?.driverProfileId])
 
-  const handleLoad = async () => {
+  const handleLoad = useCallback(async () => {
     if (!apiKey) return
     setLoading(true)
     setError('')
     try {
       const data = await getAlcoholQuestionnaires(apiKey)
-      setQuestionnaires(data)
+      setSubmissions(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load questionnaires')
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiKey])
 
   useEffect(() => {
     void handleLoad()
-  }, [apiKey])
+  }, [handleLoad])
 
   const handleCreate = async () => {
     if (!apiKey) return

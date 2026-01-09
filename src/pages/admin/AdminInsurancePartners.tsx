@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AppShell } from '../../components/AppShell'
 import { useAuth } from '../../auth/AuthContext'
 import {
@@ -35,7 +35,7 @@ export function AdminInsurancePartners() {
   const [bulkAssignResult, setBulkAssignResult] = useState('')
   const [bulkRemoveResult, setBulkRemoveResult] = useState('')
 
-  const handleLoad = async () => {
+  const handleLoad = useCallback(async () => {
     if (!apiKey) return
     setLoading(true)
     setError('')
@@ -47,11 +47,11 @@ export function AdminInsurancePartners() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiKey])
 
   useEffect(() => {
     void handleLoad()
-  }, [apiKey])
+  }, [handleLoad])
 
   const handleCreate = async () => {
     if (!apiKey) return

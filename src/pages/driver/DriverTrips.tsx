@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AppShell } from '../../components/AppShell'
 import { useAuth } from '../../auth/AuthContext'
 import { getTrips, updateTrip } from '../../lib/api'
@@ -18,7 +18,7 @@ export function DriverTrips() {
     alcoholProbability: '',
   })
 
-  const loadTrips = async () => {
+  const loadTrips = useCallback(async () => {
     if (!apiKey) return
     setLoading(true)
     setError('')
@@ -30,11 +30,11 @@ export function DriverTrips() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiKey, limit])
 
   useEffect(() => {
     void loadTrips()
-  }, [apiKey, limit])
+  }, [loadTrips])
 
   const handleUpdate = async () => {
     if (!apiKey) return

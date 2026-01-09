@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AppShell } from '../../components/AppShell'
 import { useAuth } from '../../auth/AuthContext'
 import { getDrivingTips, getNlgReports } from '../../lib/api'

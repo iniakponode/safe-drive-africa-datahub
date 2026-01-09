@@ -1,8 +1,9 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import type { Role } from '../lib/types'
+import type { ReactNode } from 'react'
 
-export function RequireAuth({ children }: { children: JSX.Element }) {
+export function RequireAuth({ children }: { children: ReactNode }) {
   const { profile, loading } = useAuth()
   if (loading) {
     return <div className="page-status">Loading session...</div>
@@ -18,7 +19,7 @@ export function RequireRole({
   children,
 }: {
   roles: Role[]
-  children: JSX.Element
+  children: ReactNode
 }) {
   const { profile, loading } = useAuth()
   if (loading) {

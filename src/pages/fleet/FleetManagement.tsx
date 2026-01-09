@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AppShell } from '../../components/AppShell'
 import { useAuth } from '../../auth/AuthContext'
 import {
@@ -38,7 +38,7 @@ export function FleetManagement() {
   const [bulkCreateResult, setBulkCreateResult] = useState('')
   const [bulkUpdateResult, setBulkUpdateResult] = useState('')
 
-  const handleLoad = async () => {
+  const handleLoad = useCallback(async () => {
     if (!apiKey) return
     setLoading(true)
     setError('')
@@ -50,11 +50,11 @@ export function FleetManagement() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiKey])
 
   useEffect(() => {
     void handleLoad()
-  }, [apiKey])
+  }, [handleLoad])
 
   const handleCreateFleet = async () => {
     if (!apiKey) return
@@ -171,12 +171,7 @@ export function FleetManagement() {
             description: description || undefined,
           }
         })
-        .filter(
-          (
-            row,
-          ): row is { fleet_id: string; name: string; description?: string } =>
-            Boolean(row),
-        )
+        .filter((row): row is NonNullable<typeof row> => row !== null)
       if (!payload.length) {
         setError('CSV has no valid rows.')
         setLoading(false)
@@ -230,12 +225,7 @@ export function FleetManagement() {
             description: description || undefined,
           }
         })
-        .filter(
-          (
-            row,
-          ): row is { group_id: string; name?: string; description?: string } =>
-            Boolean(row),
-        )
+        .filter((row): row is NonNullable<typeof row> => row !== null)
       if (!payload.length) {
         setError('CSV has no valid rows.')
         setLoading(false)

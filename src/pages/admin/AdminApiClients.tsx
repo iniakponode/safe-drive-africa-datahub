@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AppShell } from '../../components/AppShell'
 import { useAuth } from '../../auth/AuthContext'
 import {
@@ -50,7 +50,7 @@ export function AdminApiClients() {
     insurance_partner_id: '',
   })
 
-  const handleLoad = async () => {
+  const handleLoad = useCallback(async () => {
     if (!apiKey) return
     setLoading(true)
     setError('')
@@ -62,11 +62,11 @@ export function AdminApiClients() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiKey])
 
   useEffect(() => {
     void handleLoad()
-  }, [apiKey])
+  }, [handleLoad])
 
   const handleCreate = async () => {
     if (!apiKey) return
@@ -187,19 +187,7 @@ export function AdminApiClients() {
             api_key: apiKeyValue || undefined,
           }
         })
-        .filter(
-          (
-            row,
-          ): row is {
-            name: string
-            role: string
-            active?: boolean
-            driverProfileId?: string
-            fleet_id?: string
-            insurance_partner_id?: string
-            api_key?: string
-          } => Boolean(row),
-        )
+        .filter((row): row is NonNullable<typeof row> => row !== null)
       if (!payload.length) {
         setError('CSV has no valid rows.')
         setLoading(false)

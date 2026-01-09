@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AppShell } from '../../components/AppShell'
 import { useAuth } from '../../auth/AuthContext'
 import {
@@ -38,7 +38,7 @@ export function AdminDriverProfiles() {
     sync: '',
   })
 
-  const handleLoad = async () => {
+  const handleLoad = useCallback(async () => {
     if (!apiKey) return
     setLoading(true)
     setError('')
@@ -50,11 +50,11 @@ export function AdminDriverProfiles() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiKey, limit])
 
   useEffect(() => {
     void handleLoad()
-  }, [apiKey, limit])
+  }, [handleLoad])
 
   const handleCreate = async () => {
     if (!apiKey) return
@@ -130,10 +130,7 @@ export function AdminDriverProfiles() {
             : undefined
           return { driverProfileId, email, sync }
         })
-        .filter(
-          (row): row is { driverProfileId: string; email: string; sync?: boolean } =>
-            Boolean(row),
-        )
+        .filter((row): row is NonNullable<typeof row> => row !== null)
       if (!payload.length) {
         setError('CSV has no valid rows.')
         setLoading(false)
