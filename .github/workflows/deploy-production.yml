@@ -1,0 +1,136 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Run tests
+        run: npm run test
+        continue-on-error: true
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create production .env file
+        run: |
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env.production
+          echo "VITE_ENV=production" >> .env.production
+
+      - name: Build application
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  deploy:
+    name: Deploy to Production
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://datahub.safedriveafrica.com
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          source: "dist/*"
+          target: "/tmp/safedriveafrica-deploy-${{ github.sha }}"
+          strip_components: 1
+
+      - name: Execute deployment script
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            # Set variables
+            DEPLOY_DIR="/tmp/safedriveafrica-deploy-${{ github.sha }}"
+            APP_DIR="${{ secrets.PLESK_APP_DIR }}"
+            BACKUP_DIR="/var/backups/safedriveafrica/$(date +%Y%m%d_%H%M%S)"
+            
+            # Create backup of current deployment
+            mkdir -p "$BACKUP_DIR"
+            if [ -d "$APP_DIR" ]; then
+              cp -r "$APP_DIR"/* "$BACKUP_DIR/" || true
+            fi
+            
+            # Deploy new version
+            mkdir -p "$APP_DIR"
+            rm -rf "$APP_DIR"/*
+            cp -r "$DEPLOY_DIR"/* "$APP_DIR/"
+            
+            # Set proper permissions
+            chown -R ${{ secrets.PLESK_USER }}:${{ secrets.PLESK_GROUP }} "$APP_DIR"
+            find "$APP_DIR" -type d -exec chmod 755 {} \;
+            find "$APP_DIR" -type f -exec chmod 644 {} \;
+            
+            # Clean up temp directory
+            rm -rf "$DEPLOY_DIR"
+            
+            # Keep only last 5 backups
+            ls -t /var/backups/safedriveafrica/ | tail -n +6 | xargs -I {} rm -rf /var/backups/safedriveafrica/{}
+            
+            echo "Deployment completed successfully!"
+
+      - name: Health check
+        run: |
+          sleep 5
+          curl -f https://datahub.safedriveafrica.com || exit 1

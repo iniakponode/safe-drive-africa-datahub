@@ -1,0 +1,11 @@
+# Docker
+*.tar.gz
+dist-*.tar.gz
+
+# Environment files with sensitive data
+.env.local
+.env.*.local
+
+# Backup files
+*.backup
+*.bak
