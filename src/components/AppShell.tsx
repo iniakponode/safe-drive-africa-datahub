@@ -65,7 +65,7 @@ type AppShellProps = {
 
 export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShellProps) {
   const { profile, logout } = useAuth()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const role = profile?.role ?? 'admin'
   const navItems = navByRole[role]
   const initials = profile?.name
@@ -77,7 +77,8 @@ export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShe
         .toUpperCase()
     : 'SD'
 
-  const closeMobileMenu = () => setMobileMenuOpen(false)
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+  const closeSidebar = () => setSidebarOpen(false)
 
   return (
     <div className="app">
@@ -88,16 +89,16 @@ export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShe
       </div>
 
       <div className="shell">
-        <aside className={`sidebar ${mobileMenuOpen ? 'sidebar--open' : ''}`}>
+        <aside className={`sidebar ${sidebarOpen ? 'sidebar--open' : ''}`}>
           <div className="brand">
             <span className="brand__mark">S</span>
-            <div>
+            <div className="brand__text">
               <p className="brand__name">SafeDrive Africa</p>
               <p className="brand__role">{role.replace('_', ' ')}</p>
             </div>
             <button 
-              className="mobile-close"
-              onClick={closeMobileMenu}
+              className="sidebar-toggle"
+              onClick={closeSidebar}
               aria-label="Close menu"
             >
               ✕
@@ -111,7 +112,7 @@ export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShe
                 className={({ isActive }) =>
                   `nav__item ${isActive ? 'nav__item--active' : ''}`
                 }
-                onClick={closeMobileMenu}
+                onClick={closeSidebar}
               >
                 {item.label}
               </NavLink>
@@ -126,10 +127,10 @@ export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShe
           </div>
         </aside>
 
-        {mobileMenuOpen && (
+        {sidebarOpen && (
           <div 
             className="sidebar-overlay"
-            onClick={closeMobileMenu}
+            onClick={closeSidebar}
           />
         )}
 
@@ -137,9 +138,9 @@ export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShe
           <header className="topbar">
             <div className="topbar__left">
               <button 
-                className="mobile-menu-btn"
-                onClick={() => setMobileMenuOpen(true)}
-                aria-label="Open menu"
+                className="menu-toggle"
+                onClick={toggleSidebar}
+                aria-label={sidebarOpen ? "Close menu" : "Open menu"}
               >
                 <span></span>
                 <span></span>
