@@ -50,7 +50,7 @@ export function DriverQuestionnaire() {
     setError('')
     try {
       const data = await getAlcoholQuestionnaires(apiKey)
-      setSubmissions(data)
+      setQuestionnaires(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load questionnaires')
     } finally {

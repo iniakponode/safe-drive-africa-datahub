@@ -26,7 +26,7 @@ export function DriverTips() {
     return profile?.driverProfileId ?? undefined
   }, [driverId, profile?.driverProfileId, profile?.role])
 
-  const loadTips = async () => {
+  const loadTips = useCallback(async () => {
     if (!apiKey) return
     setLoading(true)
     setError('')
@@ -48,11 +48,11 @@ export function DriverTips() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiKey, limit, queryDriverId])
 
   useEffect(() => {
     void loadTips()
-  }, [apiKey, limit, queryDriverId])
+  }, [loadTips])
 
   return (
     <AppShell
