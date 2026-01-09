@@ -13,16 +13,15 @@ This file documents all the GitHub Secrets required for CI/CD deployment.
 
 ### VPS_HOST
 **Description**: Your IONOS VPS IP address or hostname
-**Example**: `123.45.67.89` or `server.safedriveafrica.com`
+**From your Plesk**: 216.225.195.203
 ```
-Value: <your-vps-host>
+Value: 216.225.195.203
 ```
 
 ### VPS_USERNAME
-**Description**: SSH username for deployment (typically root or a dedicated deploy user)
-**Example**: `root` or `safedriveafrica`
+**Description**: SSH username for deployment (use root - has SSH access)
 ```
-Value: <your-ssh-username>
+Value: root
 ```
 
 ### VPS_SSH_KEY
@@ -55,10 +54,9 @@ Value: /var/www/vhosts/safedriveafrica.com/datahub.safedriveafrica.com
 
 ### PLESK_USER
 **Description**: Web server user for file ownership
-**For IONOS/Plesk**: Usually in format `domainname_vt###` (visible in Plesk File Manager)
-**Example**: `safedriveafrica_com_vt8em`
+**From your Plesk System user's credentials**: safedriveafrica.com_vt8emkn07gl
 ```
-Value: safedriveafrica_com_vt8em
+Value: safedriveafrica.com_vt8emkn07gl
 ```
 
 ### PLESK_GROUP
