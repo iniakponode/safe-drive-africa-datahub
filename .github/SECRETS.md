@@ -47,23 +47,25 @@ Value: 22
 
 ### PLESK_APP_DIR
 **Description**: Full path to application directory on server
-**Example**: `/var/www/vhosts/safedriveafrica.com/httpdocs/datahub`
+**Example**: `/var/www/vhosts/safedriveafrica.com/datahub.safedriveafrica.com`
+**Note**: This is the document root for your subdomain (no httpdocs subfolder)
 ```
-Value: <your-app-directory-path>
+Value: /var/www/vhosts/safedriveafrica.com/datahub.safedriveafrica.com
 ```
 
 ### PLESK_USER
 **Description**: Web server user for file ownership
-**Common values**: `www-data`, `apache`, `nginx`, or Plesk-specific user
+**For IONOS/Plesk**: Usually in format `domainname_vt###` (visible in Plesk File Manager)
+**Example**: `safedriveafrica_com_vt8em`
 ```
-Value: www-data
+Value: safedriveafrica_com_vt8em
 ```
 
 ### PLESK_GROUP
 **Description**: Web server group for file ownership
-**Common values**: `www-data`, `psaserv`, `apache`, `nginx`
+**For IONOS/Plesk**: Usually `psacln` or `psaserv`
 ```
-Value: www-data
+Value: psacln
 ```
 
 ### VITE_API_URL
@@ -81,9 +83,9 @@ Value: https://staging.api.safedriveafrica.com
 ```
 
 ### STAGING_APP_DIR
-**Description**: Staging directory path
+**Description**: Staging directory path (if you create a staging subdomain)
 ```
-Value: /var/www/vhosts/safedriveafrica.com/httpdocs/staging.datahub
+Value: /var/www/vhosts/safedriveafrica.com/staging.datahub.safedriveafrica.com
 ```
 
 ## Verification
