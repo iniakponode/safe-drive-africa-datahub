@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import type { Role } from '../lib/types'
@@ -64,6 +65,7 @@ type AppShellProps = {
 
 export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShellProps) {
   const { profile, logout } = useAuth()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const role = profile?.role ?? 'admin'
   const navItems = navByRole[role]
   const initials = profile?.name
@@ -75,6 +77,8 @@ export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShe
         .toUpperCase()
     : 'SD'
 
+  const closeMobileMenu = () => setMobileMenuOpen(false)
+
   return (
     <div className="app">
       <div className="background">
@@ -84,13 +88,20 @@ export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShe
       </div>
 
       <div className="shell">
-        <aside className="sidebar">
+        <aside className={`sidebar ${mobileMenuOpen ? 'sidebar--open' : ''}`}>
           <div className="brand">
             <span className="brand__mark">S</span>
             <div>
               <p className="brand__name">SafeDrive Africa</p>
               <p className="brand__role">{role.replace('_', ' ')}</p>
             </div>
+            <button 
+              className="mobile-close"
+              onClick={closeMobileMenu}
+              aria-label="Close menu"
+            >
+              ✕
+            </button>
           </div>
           <nav className="nav">
             {navItems.map((item) => (
@@ -100,6 +111,7 @@ export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShe
                 className={({ isActive }) =>
                   `nav__item ${isActive ? 'nav__item--active' : ''}`
                 }
+                onClick={closeMobileMenu}
               >
                 {item.label}
               </NavLink>
@@ -114,12 +126,30 @@ export function AppShell({ title, eyebrow, subtitle, actions, children }: AppShe
           </div>
         </aside>
 
+        {mobileMenuOpen && (
+          <div 
+            className="sidebar-overlay"
+            onClick={closeMobileMenu}
+          />
+        )}
+
         <main className="main">
           <header className="topbar">
-            <div>
-              {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-              <h1>{title}</h1>
-              {subtitle && <p className="subtext">{subtitle}</p>}
+            <div className="topbar__left">
+              <button 
+                className="mobile-menu-btn"
+                onClick={() => setMobileMenuOpen(true)}
+                aria-label="Open menu"
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
+              <div>
+                {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+                <h1>{title}</h1>
+                {subtitle && <p className="subtext">{subtitle}</p>}
+              </div>
             </div>
             <div className="topbar__actions">
               {actions}
