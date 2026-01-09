@@ -7,13 +7,8 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "your-github-username"
-    assignees:
-      - "your-github-username"
     labels:
       - "dependencies"
-      - "automated"
     commit-message:
       prefix: "chore"
       include: "scope"
