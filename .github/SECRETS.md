@@ -66,15 +66,15 @@ Value: safedriveafrica.com_vt8emkn07gl
 Value: psacln
 ```
 
-### VITE_API_URL
-**Description**: Production API URL
+### VITE_API_BASE_URL
+**Description**: Production API URL (used by React app at build time)
 ```
 Value: https://api.safedriveafrica.com
 ```
 
 ## Optional Secrets (for Staging)
 
-### STAGING_API_URL
+### STAGING_API_BASE_URL
 **Description**: Staging API URL
 ```
 Value: https://staging.api.safedriveafrica.com

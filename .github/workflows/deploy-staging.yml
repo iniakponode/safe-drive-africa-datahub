@@ -51,7 +51,7 @@ jobs:
 
       - name: Create staging .env file
         run: |
-          echo "VITE_API_URL=${{ secrets.STAGING_API_URL }}" >> .env.staging
+          echo "VITE_API_BASE_URL=${{ secrets.STAGING_API_BASE_URL }}" >> .env.staging
           echo "VITE_ENV=staging" >> .env.staging
 
       - name: Build application
