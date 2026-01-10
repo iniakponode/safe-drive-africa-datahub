@@ -96,17 +96,19 @@ export async function apiFetch<T>(
   authMethod: AuthMethod = 'api-key',
 ): Promise<T> {
   const url = API_BASE ? `${API_BASE}${path}` : path
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(options.headers as Record<string, string> ?? {}),
+  const headers = new Headers(options.headers ?? {})
+  if (!headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json')
   }
-  
+
   if (authMethod === 'jwt') {
-    headers['Authorization'] = `Bearer ${apiKey}`
+    headers.set('Authorization', `Bearer ${apiKey}`)
+    headers.delete('X-API-Key')
   } else {
-    headers['X-API-Key'] = apiKey
+    headers.set('X-API-Key', apiKey)
+    headers.delete('Authorization')
   }
-  
+
   const response = await fetch(url, {
     ...options,
     headers,
