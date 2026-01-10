@@ -96,9 +96,9 @@ export async function apiFetch<T>(
   authMethod: AuthMethod = 'api-key',
 ): Promise<T> {
   const url = API_BASE ? `${API_BASE}${path}` : path
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...(options.headers ?? {}),
+    ...(options.headers as Record<string, string> ?? {}),
   }
   
   if (authMethod === 'jwt') {

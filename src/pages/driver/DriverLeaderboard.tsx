@@ -22,7 +22,7 @@ export function DriverLeaderboard() {
       if (!apiKey) return
       setError('')
       try {
-        const data = await getLeaderboard(apiKey, period, undefined, authType)
+        const data = await getLeaderboard(apiKey, period, undefined, authType ?? 'api-key')
         if (!active) return
         setLeaderboard(data)
       } catch (err) {

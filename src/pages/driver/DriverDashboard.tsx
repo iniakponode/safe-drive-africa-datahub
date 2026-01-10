@@ -34,9 +34,9 @@ export function DriverDashboard() {
       setError('')
       try {
         const [seriesRes, leaderboardRes, badDaysRes] = await Promise.all([
-          getDriverUbpkSeries(apiKey, period, profile?.driverProfileId ?? undefined, authType),
-          getLeaderboard(apiKey, period, undefined, authType),
-          getBadDays(apiKey, undefined, authType),
+          getDriverUbpkSeries(apiKey, period, profile?.driverProfileId ?? undefined, authType ?? 'api-key'),
+          getLeaderboard(apiKey, period, undefined, authType ?? 'api-key'),
+          getBadDays(apiKey, undefined, authType ?? 'api-key'),
         ])
         if (!active) return
         setSeries(seriesRes)
