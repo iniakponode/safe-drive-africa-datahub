@@ -36,6 +36,8 @@ import type {
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? ''
 
+type AuthMethod = 'api-key' | 'jwt'
+
 type ScopeParams = {
   fleetId?: string
   insurancePartnerId?: string
@@ -91,15 +93,23 @@ export async function apiFetch<T>(
   path: string,
   apiKey: string,
   options: RequestInit = {},
+  authMethod: AuthMethod = 'api-key',
 ): Promise<T> {
   const url = API_BASE ? `${API_BASE}${path}` : path
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...(options.headers ?? {}),
+  }
+  
+  if (authMethod === 'jwt') {
+    headers['Authorization'] = `Bearer ${apiKey}`
+  } else {
+    headers['X-API-Key'] = apiKey
+  }
+  
   const response = await fetch(url, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'X-API-Key': apiKey,
-      ...(options.headers ?? {}),
-    },
+    headers,
   })
   if (!response.ok) {
     const message = await response.text()
@@ -113,20 +123,7 @@ export async function apiFetchWithJWT<T>(
   jwtToken: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const url = API_BASE ? `${API_BASE}${path}` : path
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${jwtToken}`,
-      ...(options.headers ?? {}),
-    },
-  })
-  if (!response.ok) {
-    const message = await response.text()
-    throw new Error(message || `Request failed: ${response.status}`)
-  }
-  return (await response.json()) as T
+  return apiFetch<T>(path, jwtToken, options, 'jwt')
 }
 
 export async function apiFetchBlob(
@@ -184,12 +181,15 @@ export function getLeaderboard(
   apiKey: string,
   period: string,
   scope?: ScopeParams,
+  authMethod?: AuthMethod,
 ): Promise<LeaderboardResponse> {
   return apiFetch<LeaderboardResponse>(
     `/api/analytics/leaderboard?period=${encodeURIComponent(period)}${scopeQuery(
       scope,
     )}`,
     apiKey,
+    {},
+    authMethod,
   )
 }
 
@@ -197,22 +197,28 @@ export function getDriverKpis(
   apiKey: string,
   period: string,
   scope?: ScopeParams,
+  authMethod?: AuthMethod,
 ): Promise<DriverKpiResponse> {
   return apiFetch<DriverKpiResponse>(
     `/api/analytics/driver-kpis?period=${encodeURIComponent(period)}${scopeQuery(
       scope,
     )}`,
     apiKey,
+    {},
+    authMethod,
   )
 }
 
 export function getBadDays(
   apiKey: string,
   scope?: ScopeParams,
+  authMethod?: AuthMethod,
 ): Promise<BadDaysResponse> {
   return apiFetch<BadDaysResponse>(
     `/api/analytics/bad-days${scopeQueryPrefix(scope)}`,
     apiKey,
+    {},
+    authMethod,
   )
 }
 
@@ -220,6 +226,7 @@ export function getDriverUbpkSeries(
   apiKey: string,
   period: string,
   driverProfileId?: string,
+  authMethod?: AuthMethod,
 ): Promise<DriverUBPKSeriesResponse> {
   const params = new URLSearchParams({ period })
   if (driverProfileId) {
@@ -228,6 +235,8 @@ export function getDriverUbpkSeries(
   return apiFetch<DriverUBPKSeriesResponse>(
     `/api/analytics/driver-ubpk?${params.toString()}`,
     apiKey,
+    {},
+    authMethod,
   )
 }
 

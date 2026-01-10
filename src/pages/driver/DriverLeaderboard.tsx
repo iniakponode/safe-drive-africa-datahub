@@ -11,7 +11,7 @@ function shortId(value: string) {
 }
 
 export function DriverLeaderboard() {
-  const { apiKey, profile } = useAuth()
+  const { apiKey, profile, authType } = useAuth()
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>('week')
   const [leaderboard, setLeaderboard] = useState<LeaderboardResponse | null>(null)
   const [error, setError] = useState('')
@@ -22,7 +22,7 @@ export function DriverLeaderboard() {
       if (!apiKey) return
       setError('')
       try {
-        const data = await getLeaderboard(apiKey, period)
+        const data = await getLeaderboard(apiKey, period, undefined, authType)
         if (!active) return
         setLeaderboard(data)
       } catch (err) {
@@ -34,7 +34,7 @@ export function DriverLeaderboard() {
     return () => {
       active = false
     }
-  }, [apiKey, period])
+  }, [apiKey, period, authType])
 
   const driverId = profile?.driverProfileId
 

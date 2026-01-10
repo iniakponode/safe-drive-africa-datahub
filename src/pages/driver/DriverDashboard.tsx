@@ -20,7 +20,7 @@ function shortId(value?: string | null) {
 }
 
 export function DriverDashboard() {
-  const { apiKey, profile } = useAuth()
+  const { apiKey, profile, authType } = useAuth()
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>('week')
   const [series, setSeries] = useState<DriverUBPKSeriesResponse | null>(null)
   const [leaderboard, setLeaderboard] = useState<LeaderboardResponse | null>(null)
@@ -34,9 +34,9 @@ export function DriverDashboard() {
       setError('')
       try {
         const [seriesRes, leaderboardRes, badDaysRes] = await Promise.all([
-          getDriverUbpkSeries(apiKey, period, profile?.driverProfileId ?? undefined),
-          getLeaderboard(apiKey, period),
-          getBadDays(apiKey),
+          getDriverUbpkSeries(apiKey, period, profile?.driverProfileId ?? undefined, authType),
+          getLeaderboard(apiKey, period, undefined, authType),
+          getBadDays(apiKey, undefined, authType),
         ])
         if (!active) return
         setSeries(seriesRes)
@@ -51,7 +51,7 @@ export function DriverDashboard() {
     return () => {
       active = false
     }
-  }, [apiKey, period, profile?.driverProfileId])
+  }, [apiKey, period, profile?.driverProfileId, authType])
 
   const latest = series?.series[series.series.length - 1]
   const badDayEntry = badDays?.drivers.find(
