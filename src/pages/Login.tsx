@@ -60,6 +60,11 @@ export function Login() {
             Login with email/password
           </a>
         </p>
+        <p className="login__footer">
+          <a href="/privacy" className="login__link">
+            Privacy Policy
+          </a>
+        </p>
       </div>
       <div className="login__side">
         <div className="login__card">

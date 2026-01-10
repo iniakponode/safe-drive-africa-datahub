@@ -28,6 +28,7 @@ import { InsuranceReports } from './pages/insurance/InsuranceReports'
 import { InsuranceTelematics } from './pages/insurance/InsuranceTelematics'
 import { Login } from './pages/Login'
 import { DriverLogin } from './pages/DriverLogin'
+import { Privacy } from './pages/Privacy'
 import { ResearcherDashboard } from './pages/researcher/ResearcherDashboard'
 import { ResearcherAlcoholBundle } from './pages/researcher/ResearcherAlcoholBundle'
 import { ResearcherExports } from './pages/researcher/ResearcherExports'
@@ -40,6 +41,7 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/driver-login" element={<DriverLogin />} />
+      <Route path="/privacy" element={<Privacy />} />
       <Route
         path="/"
         element={

@@ -77,6 +77,11 @@ export function DriverLogin() {
             Login with API Key
           </a>
         </p>
+        <p className="login__footer">
+          <a href="/privacy" className="login__link">
+            Privacy Policy
+          </a>
+        </p>
       </div>
 
       <div className="login__side">
