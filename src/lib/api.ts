@@ -108,6 +108,27 @@ export async function apiFetch<T>(
   return (await response.json()) as T
 }
 
+export async function apiFetchWithJWT<T>(
+  path: string,
+  jwtToken: string,
+  options: RequestInit = {},
+): Promise<T> {
+  const url = API_BASE ? `${API_BASE}${path}` : path
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${jwtToken}`,
+      ...(options.headers ?? {}),
+    },
+  })
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Request failed: ${response.status}`)
+  }
+  return (await response.json()) as T
+}
+
 export async function apiFetchBlob(
   path: string,
   apiKey: string,
@@ -130,6 +151,33 @@ export async function apiFetchBlob(
 
 export function getAuthMe(apiKey: string): Promise<AuthMe> {
   return apiFetch<AuthMe>('/api/auth/me', apiKey)
+}
+
+// Driver JWT Authentication
+export async function loginDriver(
+  email: string,
+  password: string,
+): Promise<{ access_token: string; driver_profile_id: string }> {
+  const url = API_BASE ? `${API_BASE}/api/auth/driver/login` : '/api/auth/driver/login'
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  })
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error('Invalid email or password')
+    }
+    const message = await response.text()
+    throw new Error(message || 'Login failed')
+  }
+  return await response.json()
+}
+
+export function getDriverAuthMe(jwtToken: string): Promise<AuthMe> {
+  return apiFetchWithJWT<AuthMe>('/api/auth/driver/me', jwtToken)
 }
 
 export function getLeaderboard(

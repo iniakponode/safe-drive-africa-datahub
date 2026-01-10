@@ -27,9 +27,9 @@ export function Login() {
     <div className="login">
       <div className="login__panel">
         <p className="eyebrow">SafeDrive Africa</p>
-        <h1>Fleet Intelligence Console</h1>
+        <h1>Admin & Staff Login</h1>
         <p className="subtext">
-          Sign in with your API key to access fleet, driver, researcher, or
+          Sign in with your API key to access fleet, researcher, or
           insurance dashboards.
         </p>
         <form className="login__form" onSubmit={handleSubmit}>
@@ -50,6 +50,12 @@ export function Login() {
             <p className="login__error">{localError || error}</p>
           )}
         </form>
+        <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--ink-500)' }}>
+          <strong>Driver?</strong>{' '}
+          <a href="/driver-login" style={{ color: 'var(--sage-700)' }}>
+            Login with email/password
+          </a>
+        </p>
       </div>
       <div className="login__side">
         <div className="login__card">
