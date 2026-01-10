@@ -596,23 +596,56 @@
 
 .login__label {
   font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ink-700);
 }
 
 .login__input {
+  width: 100%;
   border: 1px solid rgba(18, 32, 24, 0.2);
   border-radius: 12px;
   padding: 10px 12px;
   font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.login__input:focus {
+  outline: none;
+  border-color: var(--sage-600);
 }
 
 .login__submit {
   width: 100%;
+  margin-top: 4px;
 }
 
 .login__error {
   color: var(--rose-700);
   font-size: 0.9rem;
   margin: 0;
+  padding: 8px 12px;
+  background: rgba(198, 70, 74, 0.1);
+  border-radius: 8px;
+}
+
+.login__footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(18, 32, 24, 0.08);
+  font-size: 0.9rem;
+  color: var(--ink-500);
+  text-align: center;
+}
+
+.login__link {
+  color: var(--sage-700);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login__link:hover {
+  text-decoration: underline;
 }
 
 .login__side {

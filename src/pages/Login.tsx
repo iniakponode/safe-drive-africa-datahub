@@ -33,26 +33,30 @@ export function Login() {
           insurance dashboards.
         </p>
         <form className="login__form" onSubmit={handleSubmit}>
-          <label className="login__label" htmlFor="apiKey">
-            API Key
-          </label>
-          <input
-            id="apiKey"
-            className="login__input"
-            placeholder="Paste your X-API-Key value"
-            value={apiKey}
-            onChange={(event) => setApiKey(event.target.value)}
-          />
-          <button className="cta login__submit" type="submit" disabled={loading}>
-            {loading ? 'Authenticating...' : 'Sign in'}
-          </button>
+          <div>
+            <label className="login__label" htmlFor="apiKey">
+              API Key
+            </label>
+            <input
+              id="apiKey"
+              className="login__input"
+              placeholder="Paste your X-API-Key value"
+              value={apiKey}
+              onChange={(event) => setApiKey(event.target.value)}
+              disabled={loading}
+              required
+            />
+          </div>
           {(localError || error) && (
             <p className="login__error">{localError || error}</p>
           )}
+          <button className="cta login__submit" type="submit" disabled={loading}>
+            {loading ? 'Authenticating...' : 'Sign in'}
+          </button>
         </form>
-        <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--ink-500)' }}>
+        <p className="login__footer">
           <strong>Driver?</strong>{' '}
-          <a href="/driver-login" style={{ color: 'var(--sage-700)' }}>
+          <a href="/driver-login" className="login__link">
             Login with email/password
           </a>
         </p>

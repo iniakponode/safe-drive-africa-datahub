@@ -30,12 +30,16 @@ export function DriverLogin() {
   return (
     <div className="login">
       <div className="login__panel">
+        <p className="eyebrow">SafeDrive Africa</p>
         <h1>Driver Login</h1>
-        <p>Sign in with your driver credentials</p>
+        <p className="subtext">Sign in with your driver credentials</p>
         <form className="login__form" onSubmit={handleSubmit}>
-          <label className="login__label">
-            Email
+          <div>
+            <label className="login__label" htmlFor="email">
+              Email
+            </label>
             <input
+              id="email"
               className="login__input"
               type="email"
               placeholder="driver@example.com"
@@ -45,10 +49,13 @@ export function DriverLogin() {
               autoComplete="email"
               required
             />
-          </label>
-          <label className="login__label">
-            Password
+          </div>
+          <div>
+            <label className="login__label" htmlFor="password">
+              Password
+            </label>
             <input
+              id="password"
               className="login__input"
               type="password"
               placeholder="Enter your password"
@@ -58,15 +65,15 @@ export function DriverLogin() {
               autoComplete="current-password"
               required
             />
-          </label>
+          </div>
           {error && <p className="login__error">{error}</p>}
           <button className="cta login__submit" type="submit" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
-        <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--ink-500)' }}>
+        <p className="login__footer">
           <strong>Admin/Staff?</strong>{' '}
-          <a href="/login" style={{ color: 'var(--sage-700)' }}>
+          <a href="/login" className="login__link">
             Login with API Key
           </a>
         </p>
